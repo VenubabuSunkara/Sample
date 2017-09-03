@@ -1,0 +1,1769 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TFModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ClaimType" Type="nvarchar(max)" />
+          <Property Name="ClaimValue" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ProviderKey" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="10" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="10" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CompanyID" Type="int" />
+        </EntityType>
+        <EntityType Name="CustomerDOTNumbers">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="DOTTag" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="CustomerProfiles">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+          </Key>
+          <Property Name="CompanyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="75" Nullable="false" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="10" />
+          <Property Name="AccountOwnerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AccountOwnerEmail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CompanyLogo" Type="nvarchar(max)" />
+          <Property Name="AddressLine1" Type="nvarchar" MaxLength="500" />
+          <Property Name="AddressLine2" Type="nvarchar" MaxLength="500" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="State" Type="nvarchar" MaxLength="50" />
+          <Property Name="ZipCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="Driver">
+          <Key>
+            <PropertyRef Name="DriverID" />
+          </Key>
+          <Property Name="DriverID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyId" Type="int" Nullable="false" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="LicenseState" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LicenseNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="DOB" Type="datetime" Nullable="false" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="MI" Type="nvarchar" MaxLength="50" />
+          <Property Name="isDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_CRASH_ID">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransId" Type="varchar" MaxLength="10" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RPT_REG_CP_CRASH_ID" Type="int" />
+          <Property Name="SEQ_OF_EVENT1" Type="varchar" MaxLength="10" />
+          <Property Name="SEQ_OF_EVENT2" Type="varchar" MaxLength="10" />
+          <Property Name="SEQ_OF_EVENT3" Type="varchar" MaxLength="10" />
+          <Property Name="SEQ_OF_EVENT4" Type="varchar" MaxLength="10" />
+          <Property Name="DRIVER_LAST_NAME" Type="varchar" MaxLength="25" />
+          <Property Name="DRIVER_FIRST_NAME" Type="varchar" MaxLength="25" />
+          <Property Name="DRIVER_MI" Type="varchar" MaxLength="10" />
+          <Property Name="TOW_AWAY" Type="varchar" MaxLength="10" />
+          <Property Name="REPORT_DATE" Type="datetime" />
+          <Property Name="REPORT_TIME" Type="varchar" MaxLength="5" />
+          <Property Name="REPORT_NUMBER" Type="varchar" MaxLength="20" />
+          <Property Name="LOCATION" Type="varchar" MaxLength="30" />
+          <Property Name="COUNTY" Type="varchar" MaxLength="30" />
+          <Property Name="CITY1" Type="varchar" MaxLength="25" />
+          <Property Name="STATE1" Type="varchar" MaxLength="2" />
+          <Property Name="FATALITIES1" Type="int" />
+          <Property Name="INJURIES" Type="int" />
+          <Property Name="HAZMAT_FLAG" Type="varchar" MaxLength="10" />
+          <Property Name="CARRIER_NAME" Type="varchar" MaxLength="50" />
+          <Property Name="CARRIER_CITY" Type="varchar" MaxLength="25" />
+          <Property Name="CARRIER_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="VEH_LIC_NUMBER" Type="varchar" MaxLength="20" />
+          <Property Name="VEH_LIC_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="DRIVER_LIC_NUMBER" Type="varchar" MaxLength="30" />
+          <Property Name="DRIVER_LIC_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="DRIVER_BDAY" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="CompanyId" Type="int" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_INSP_ID">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransID" Type="varchar" MaxLength="10" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="INSPECTION_ID" Type="int" />
+          <Property Name="UNIT_NUMBER1" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE1" Type="varchar" MaxLength="10" />
+          <Property Name="VEH_ST_LICENSE1" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN1" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER1" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_NUMBER2" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE2" Type="varchar" MaxLength="10" />
+          <Property Name="VEH_ST_LICENSE2" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN2" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER2" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_NUMBER3" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE3" Type="varchar" MaxLength="10" />
+          <Property Name="VEN_ST_LICENSE3" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN3" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER3" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_NUMBER4" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE4" Type="varchar" MaxLength="10" />
+          <Property Name="VEN_ST_LICENSE4" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN4" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER4" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_NUMBER5" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE5" Type="varchar" MaxLength="10" />
+          <Property Name="VEH_ST_LICENSE5" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN5" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER5" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_NUMBER6" Type="varchar" MaxLength="10" />
+          <Property Name="UNIT_TYPE6" Type="varchar" MaxLength="10" />
+          <Property Name="VEH_ST_LICENSE6" Type="varchar" MaxLength="20" />
+          <Property Name="UNIT_VIN6" Type="varchar" MaxLength="25" />
+          <Property Name="COMPANY_NUMBER6" Type="varchar" MaxLength="20" />
+          <Property Name="DRIVER_LAST_NAME1" Type="varchar" MaxLength="25" />
+          <Property Name="DRIVER_FIRST_NAME1" Type="varchar" MaxLength="25" />
+          <Property Name="DRIVER_MI1" Type="varchar" MaxLength="10" />
+          <Property Name="INSP_LEVEL_CODE" Type="varchar" MaxLength="10" />
+          <Property Name="INSP_DATE" Type="datetime" />
+          <Property Name="INSP_TIME" Type="varchar" MaxLength="5" />
+          <Property Name="REPORT_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="REPORT_NUMBER1" Type="varchar" MaxLength="20" />
+          <Property Name="COUNTY_NAME1" Type="varchar" MaxLength="50" />
+          <Property Name="LOCATION1" Type="varchar" MaxLength="50" />
+          <Property Name="HM" Type="varchar" MaxLength="10" />
+          <Property Name="TOTAL_VIOL" Type="int" />
+          <Property Name="TOTAL_OOS" Type="int" />
+          <Property Name="CARRIER_NAME1" Type="varchar" MaxLength="50" />
+          <Property Name="CARRIER_CITY1" Type="varchar" MaxLength="50" />
+          <Property Name="CARRIER_STATE1" Type="varchar" MaxLength="2" />
+          <Property Name="DRIVER_LICENSE" Type="varchar" MaxLength="30" />
+          <Property Name="DRIVER_LICENSE_STATE" Type="varchar" MaxLength="2" />
+          <Property Name="DRIVER_DOB" Type="datetime" />
+          <Property Name="ImportMessage" Type="varchar" MaxLength="255" />
+          <Property Name="DriverId" Type="int" />
+          <Property Name="LocationCode" Type="varchar" MaxLength="10" />
+          <Property Name="Comment" Type="varchar" MaxLength="8000" />
+          <Property Name="DriverLogProvided" Type="varchar" MaxLength="1" />
+          <Property Name="VehicleRepairOrderProvided" Type="varchar" MaxLength="1" />
+          <Property Name="DriverDisciplineIssued" Type="varchar" MaxLength="1" />
+          <Property Name="DriverRelatedViolation" Type="varchar" MaxLength="1" />
+          <Property Name="FailedToReportInspection" Type="varchar" MaxLength="1" />
+          <Property Name="FailPreTripInspection" Type="varchar" MaxLength="1" />
+          <Property Name="ImproperLogFile" Type="varchar" MaxLength="1" />
+          <Property Name="DocsRequested" Type="varchar" MaxLength="1" />
+          <Property Name="DocsRequestedCount" Type="int" />
+          <Property Name="InitDocRequestDate" Type="datetime" />
+          <Property Name="LastDocRequestDate" Type="datetime" />
+          <Property Name="DeniedInspection" Type="varchar" MaxLength="1" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="InspectionLinked" Type="varchar" MaxLength="1" />
+          <Property Name="ReportNbrKey" Type="varchar" MaxLength="4" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CompanyId" Type="int" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_INSP_VIOL_DETAIL">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransID" Type="varchar" MaxLength="10" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="INSPECTION_ID" Type="int" />
+          <Property Name="VIOL_UNIT" Type="varchar" MaxLength="10" />
+          <Property Name="VIOL_CAT" Type="varchar" MaxLength="10" />
+          <Property Name="VIOL_OOS" Type="varchar" MaxLength="10" />
+          <Property Name="POST_CRASH_FL" Type="varchar" MaxLength="10" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CompanyId" Type="int" />
+        </EntityType>
+        <EntityType Name="G_VIOL_CAT_TYPE_NAME">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="INSP_VIOLATION_CATEGORY_NAME1" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="INSP_VIOLATION_CATEGORY_DESC" Type="varchar" MaxLength="50" />
+          <Property Name="SEQ_ORDER1" Type="int" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="TransId" Type="varchar" MaxLength="10" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CompanyId" Type="int" />
+        </EntityType>
+        <EntityType Name="Inspection_Documents">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocumentUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="ManualRsiId" Type="int" Nullable="false" />
+          <Property Name="CompanyId" Type="int" />
+          <Property Name="InspectionId" Type="int" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocId" />
+          </Key>
+          <Property Name="LocId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocCode" Type="nvarchar" MaxLength="64" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="Location_Configuration">
+          <Key>
+            <PropertyRef Name="LocConfigID" />
+          </Key>
+          <Property Name="LocConfigID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Relation" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LocationFieldType">
+          <Key>
+            <PropertyRef Name="LocFID" />
+          </Key>
+          <Property Name="LocFID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FieldType" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LocationMetadata">
+          <Key>
+            <PropertyRef Name="LocMID" />
+          </Key>
+          <Property Name="LocMID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="LocConfigID" Type="int" Nullable="false" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FieldType" Type="int" Nullable="false" />
+          <Property Name="Tags" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="LocId" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="ManualRSI">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="DOTNumber" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="InspectionID" Type="int" Nullable="false" />
+          <Property Name="ReportNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="DriverLastName" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="DriverFirstName" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="DriverLicenseNumber" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="DriverLicenseState" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="InspectionDate" Type="datetime" Nullable="false" />
+          <Property Name="InspectionState" Type="varchar" MaxLength="2" Nullable="false" />
+          <Property Name="Violations" Type="varchar" MaxLength="255" />
+          <Property Name="OOS" Type="varchar" MaxLength="10" />
+          <Property Name="NoticeNumber" Type="varchar" MaxLength="10" />
+          <Property Name="DisciplineActionIssued" Type="bit" />
+          <Property Name="RepairWorkOrder" Type="bit" />
+          <Property Name="DriverLog" Type="bit" />
+          <Property Name="InspectionReceived" Type="bit" />
+          <Property Name="VehicleLicenseNumber" Type="varchar" MaxLength="25" />
+          <Property Name="CompanyVehicleNumber" Type="varchar" MaxLength="25" />
+          <Property Name="OtherViolation" Type="bit" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="128" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="LocationCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="DriverDOB" Type="date" />
+          <Property Name="AdminNotes" Type="nvarchar" MaxLength="500" />
+          <Property Name="INSP_ID" Type="int" />
+        </EntityType>
+        <Association Name="FK_AspNetUsers_Company">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="0..1" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="AspNetUsers">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerDOTNumbers_CustomerProfiles">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="CustomerDOTNumbers" Type="Self.CustomerDOTNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="CustomerDOTNumbers">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Driver_Company">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="Driver" Type="Self.Driver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Driver">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Inspection_Documents_Company">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="0..1" />
+          <End Role="Inspection_Documents" Type="Self.Inspection_Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Inspection_Documents">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Inspection_Documents_Inspection_Documents">
+          <End Role="Inspection_Documents" Type="Self.Inspection_Documents" Multiplicity="1" />
+          <End Role="Inspection_Documents1" Type="Self.Inspection_Documents" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Inspection_Documents">
+              <PropertyRef Name="DocumentId" />
+            </Principal>
+            <Dependent Role="Inspection_Documents1">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Location_Configuration_CustomerProfiles">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="Location_Configuration" Type="Self.Location_Configuration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Location_Configuration">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Location_CustomerProfiles">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_Customer">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="LocationMetadata" Type="Self.LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_FieldType">
+          <End Role="LocationFieldType" Type="Self.LocationFieldType" Multiplicity="1" />
+          <End Role="LocationMetadata" Type="Self.LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocationFieldType">
+              <PropertyRef Name="LocFID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="FieldType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_Location">
+          <End Role="Location" Type="Self.Location" Multiplicity="1" />
+          <End Role="LocationMetadata" Type="Self.LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocId" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="LocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_Location_Configuration">
+          <End Role="Location_Configuration" Type="Self.Location_Configuration" Multiplicity="1" />
+          <End Role="LocationMetadata" Type="Self.LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location_Configuration">
+              <PropertyRef Name="LocConfigID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="LocConfigID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ManualRSI_Company">
+          <End Role="CustomerProfiles" Type="Self.CustomerProfiles" Multiplicity="1" />
+          <End Role="ManualRSI" Type="Self.ManualRSI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfiles">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="ManualRSI">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ManualRSI_INSP_ID">
+          <End Role="G_RPT_REG_CP_INSP_ID" Type="Self.G_RPT_REG_CP_INSP_ID" Multiplicity="0..1" />
+          <End Role="ManualRSI" Type="Self.ManualRSI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="G_RPT_REG_CP_INSP_ID">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ManualRSI">
+              <PropertyRef Name="INSP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TFModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerDOTNumbers" EntityType="Self.CustomerDOTNumbers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerProfiles" EntityType="Self.CustomerProfiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Driver" EntityType="Self.Driver" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="G_RPT_REG_CP_CRASH_ID" EntityType="Self.G_RPT_REG_CP_CRASH_ID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="G_RPT_REG_CP_INSP_ID" EntityType="Self.G_RPT_REG_CP_INSP_ID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="G_RPT_REG_CP_INSP_VIOL_DETAIL" EntityType="Self.G_RPT_REG_CP_INSP_VIOL_DETAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="G_VIOL_CAT_TYPE_NAME" EntityType="Self.G_VIOL_CAT_TYPE_NAME" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Inspection_Documents" EntityType="Self.Inspection_Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location_Configuration" EntityType="Self.Location_Configuration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LocationFieldType" EntityType="Self.LocationFieldType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LocationMetadata" EntityType="Self.LocationMetadata" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ManualRSI" EntityType="Self.ManualRSI" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AspNetUsers_Company" Association="Self.FK_AspNetUsers_Company">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerDOTNumbers_CustomerProfiles" Association="Self.FK_CustomerDOTNumbers_CustomerProfiles">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="CustomerDOTNumbers" EntitySet="CustomerDOTNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Driver_Company" Association="Self.FK_Driver_Company">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="Driver" EntitySet="Driver" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Inspection_Documents_Company" Association="Self.FK_Inspection_Documents_Company">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="Inspection_Documents" EntitySet="Inspection_Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Inspection_Documents_Inspection_Documents" Association="Self.FK_Inspection_Documents_Inspection_Documents">
+            <End Role="Inspection_Documents" EntitySet="Inspection_Documents" />
+            <End Role="Inspection_Documents1" EntitySet="Inspection_Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Configuration_CustomerProfiles" Association="Self.FK_Location_Configuration_CustomerProfiles">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="Location_Configuration" EntitySet="Location_Configuration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_CustomerProfiles" Association="Self.FK_Location_CustomerProfiles">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="Location" EntitySet="Location" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_Customer" Association="Self.FK_LocationMetadata_Customer">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadata" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_FieldType" Association="Self.FK_LocationMetadata_FieldType">
+            <End Role="LocationFieldType" EntitySet="LocationFieldType" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadata" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_Location" Association="Self.FK_LocationMetadata_Location">
+            <End Role="Location" EntitySet="Location" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadata" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_Location_Configuration" Association="Self.FK_LocationMetadata_Location_Configuration">
+            <End Role="Location_Configuration" EntitySet="Location_Configuration" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadata" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ManualRSI_Company" Association="Self.FK_ManualRSI_Company">
+            <End Role="CustomerProfiles" EntitySet="CustomerProfiles" />
+            <End Role="ManualRSI" EntitySet="ManualRSI" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ManualRSI_INSP_ID" Association="Self.FK_ManualRSI_INSP_ID">
+            <End Role="G_RPT_REG_CP_INSP_ID" EntitySet="G_RPT_REG_CP_INSP_ID" />
+            <End Role="ManualRSI" EntitySet="ManualRSI" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TFModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="TFPMEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AspNetRoles" EntityType="TFModel.AspNetRole" />
+          <EntitySet Name="AspNetUserClaims" EntityType="TFModel.AspNetUserClaim" />
+          <EntitySet Name="AspNetUserLogins" EntityType="TFModel.AspNetUserLogin" />
+          <EntitySet Name="CustomerDOTNumbers" EntityType="TFModel.CustomerDOTNumber" />
+          <EntitySet Name="Drivers" EntityType="TFModel.Driver" />
+          <EntitySet Name="G_RPT_REG_CP_CRASH_ID" EntityType="TFModel.G_RPT_REG_CP_CRASH_ID" />
+          <EntitySet Name="G_RPT_REG_CP_INSP_VIOL_DETAIL" EntityType="TFModel.G_RPT_REG_CP_INSP_VIOL_DETAIL" />
+          <EntitySet Name="G_VIOL_CAT_TYPE_NAME" EntityType="TFModel.G_VIOL_CAT_TYPE_NAME" />
+          <EntitySet Name="Locations" EntityType="TFModel.Location" />
+          <EntitySet Name="Location_Configuration" EntityType="TFModel.Location_Configuration" />
+          <EntitySet Name="LocationFieldTypes" EntityType="TFModel.LocationFieldType" />
+          <EntitySet Name="LocationMetadatas" EntityType="TFModel.LocationMetadata" />
+          <AssociationSet Name="FK_LocationMetadata_Location" Association="TFModel.FK_LocationMetadata_Location">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_Location_Configuration" Association="TFModel.FK_LocationMetadata_Location_Configuration">
+            <End Role="Location_Configuration" EntitySet="Location_Configuration" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_FieldType" Association="TFModel.FK_LocationMetadata_FieldType">
+            <End Role="LocationFieldType" EntitySet="LocationFieldTypes" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadatas" />
+          </AssociationSet>
+          <EntitySet Name="AspNetUsers" EntityType="TFModel.AspNetUser" />
+          <EntitySet Name="CustomerProfiles" EntityType="TFModel.CustomerProfile" />
+          <EntitySet Name="G_RPT_REG_CP_INSP_ID" EntityType="TFModel.G_RPT_REG_CP_INSP_ID" />
+          <EntitySet Name="Inspection_Documents" EntityType="TFModel.Inspection_Documents" />
+          <EntitySet Name="ManualRSIs" EntityType="TFModel.ManualRSI" />
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="TFModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaim" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="TFModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogin" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AspNetUsers_Company" Association="TFModel.FK_AspNetUsers_Company">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerDOTNumbers_CustomerProfiles" Association="TFModel.FK_CustomerDOTNumbers_CustomerProfiles">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="CustomerDOTNumber" EntitySet="CustomerDOTNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Driver_Company" Association="TFModel.FK_Driver_Company">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="Driver" EntitySet="Drivers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Inspection_Documents_Company" Association="TFModel.FK_Inspection_Documents_Company">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="Inspection_Documents" EntitySet="Inspection_Documents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Configuration_CustomerProfiles" Association="TFModel.FK_Location_Configuration_CustomerProfiles">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="Location_Configuration" EntitySet="Location_Configuration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_CustomerProfiles" Association="TFModel.FK_Location_CustomerProfiles">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LocationMetadata_Customer" Association="TFModel.FK_LocationMetadata_Customer">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="LocationMetadata" EntitySet="LocationMetadatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ManualRSI_Company" Association="TFModel.FK_ManualRSI_Company">
+            <End Role="CustomerProfile" EntitySet="CustomerProfiles" />
+            <End Role="ManualRSI" EntitySet="ManualRSIs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ManualRSI_INSP_ID" Association="TFModel.FK_ManualRSI_INSP_ID">
+            <End Role="G_RPT_REG_CP_INSP_ID" EntitySet="G_RPT_REG_CP_INSP_ID" />
+            <End Role="ManualRSI" EntitySet="ManualRSIs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Inspection_Documents_Inspection_Documents" Association="TFModel.FK_Inspection_Documents_Inspection_Documents">
+            <End Role="Inspection_Documents" EntitySet="Inspection_Documents" />
+            <End Role="Inspection_Documents1" EntitySet="Inspection_Documents" />
+          </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="TFModel.AspNetUserRoles">
+            <End Role="AspNetRole" EntitySet="AspNetRoles" />
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="TFModel.AspNetUserRoles" FromRole="AspNetRole" ToRole="AspNetUser" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaim">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="TFModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaim" ToRole="AspNetUser" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogin">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="TFModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogin" ToRole="AspNetUser" />
+        </EntityType>
+        <EntityType Name="CustomerDOTNumber">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DOTTag" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_CustomerDOTNumbers_CustomerProfiles" FromRole="CustomerDOTNumber" ToRole="CustomerProfile" />
+        </EntityType>
+        <EntityType Name="Driver">
+          <Key>
+            <PropertyRef Name="DriverID" />
+          </Key>
+          <Property Name="DriverID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyId" Type="Int32" Nullable="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LicenseState" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LicenseNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="MI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="isDelete" Type="Boolean" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_Driver_Company" FromRole="Driver" ToRole="CustomerProfile" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_CRASH_ID">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RPT_REG_CP_CRASH_ID" Type="Int32" />
+          <Property Name="SEQ_OF_EVENT1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SEQ_OF_EVENT2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SEQ_OF_EVENT3" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SEQ_OF_EVENT4" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LAST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_FIRST_NAME" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_MI" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TOW_AWAY" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="REPORT_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REPORT_TIME" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="REPORT_NUMBER" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LOCATION" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="COUNTY" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CITY1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="STATE1" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="FATALITIES1" Type="Int32" />
+          <Property Name="INJURIES" Type="Int32" />
+          <Property Name="HAZMAT_FLAG" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CARRIER_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CARRIER_CITY" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CARRIER_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_LIC_NUMBER" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_LIC_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LIC_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LIC_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_BDAY" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="CompanyId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_INSP_VIOL_DETAIL">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="INSPECTION_ID" Type="Int32" />
+          <Property Name="VIOL_UNIT" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VIOL_CAT" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VIOL_OOS" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="POST_CRASH_FL" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="G_VIOL_CAT_TYPE_NAME">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="INSP_VIOLATION_CATEGORY_NAME1" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="INSP_VIOLATION_CATEGORY_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SEQ_ORDER1" Type="Int32" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="TransId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocId" />
+          </Key>
+          <Property Name="LocId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocCode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="LocationMetadatas" Relationship="TFModel.FK_LocationMetadata_Location" FromRole="Location" ToRole="LocationMetadata" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_Location_CustomerProfiles" FromRole="Location" ToRole="CustomerProfile" />
+        </EntityType>
+        <EntityType Name="Location_Configuration">
+          <Key>
+            <PropertyRef Name="LocConfigID" />
+          </Key>
+          <Property Name="LocConfigID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Relation" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="LocationMetadatas" Relationship="TFModel.FK_LocationMetadata_Location_Configuration" FromRole="Location_Configuration" ToRole="LocationMetadata" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_Location_Configuration_CustomerProfiles" FromRole="Location_Configuration" ToRole="CustomerProfile" />
+        </EntityType>
+        <EntityType Name="LocationFieldType">
+          <Key>
+            <PropertyRef Name="LocFID" />
+          </Key>
+          <Property Name="LocFID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FieldType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LocationMetadatas" Relationship="TFModel.FK_LocationMetadata_FieldType" FromRole="LocationFieldType" ToRole="LocationMetadata" />
+        </EntityType>
+        <EntityType Name="LocationMetadata">
+          <Key>
+            <PropertyRef Name="LocMID" />
+          </Key>
+          <Property Name="LocMID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="LocConfigID" Type="Int32" Nullable="false" />
+          <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FieldType" Type="Int32" Nullable="false" />
+          <Property Name="Tags" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="LocId" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Location" Relationship="TFModel.FK_LocationMetadata_Location" FromRole="LocationMetadata" ToRole="Location" />
+          <NavigationProperty Name="Location_Configuration" Relationship="TFModel.FK_LocationMetadata_Location_Configuration" FromRole="LocationMetadata" ToRole="Location_Configuration" />
+          <NavigationProperty Name="LocationFieldType" Relationship="TFModel.FK_LocationMetadata_FieldType" FromRole="LocationMetadata" ToRole="LocationFieldType" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_LocationMetadata_Customer" FromRole="LocationMetadata" ToRole="CustomerProfile" />
+        </EntityType>
+        <Association Name="FK_LocationMetadata_Location">
+          <End Type="TFModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="TFModel.LocationMetadata" Role="LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocId" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="LocId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_Location_Configuration">
+          <End Type="TFModel.Location_Configuration" Role="Location_Configuration" Multiplicity="1" />
+          <End Type="TFModel.LocationMetadata" Role="LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location_Configuration">
+              <PropertyRef Name="LocConfigID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="LocConfigID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_FieldType">
+          <End Type="TFModel.LocationFieldType" Role="LocationFieldType" Multiplicity="1" />
+          <End Type="TFModel.LocationMetadata" Role="LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LocationFieldType">
+              <PropertyRef Name="LocFID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="FieldType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CompanyID" Type="Int32" />
+          <NavigationProperty Name="AspNetUserClaims" Relationship="TFModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserClaim" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="TFModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUser" ToRole="AspNetUserLogin" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_AspNetUsers_Company" FromRole="AspNetUser" ToRole="CustomerProfile" />
+          <NavigationProperty Name="AspNetRoles" Relationship="TFModel.AspNetUserRoles" FromRole="AspNetUser" ToRole="AspNetRole" />
+        </EntityType>
+        <EntityType Name="CustomerProfile">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+          </Key>
+          <Property Name="CompanyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" Nullable="false" MaxLength="75" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="AccountOwnerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountOwnerEmail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyLogo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AddressLine1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AddressLine2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ZipCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="AspNetUsers" Relationship="TFModel.FK_AspNetUsers_Company" FromRole="CustomerProfile" ToRole="AspNetUser" />
+          <NavigationProperty Name="CustomerDOTNumbers" Relationship="TFModel.FK_CustomerDOTNumbers_CustomerProfiles" FromRole="CustomerProfile" ToRole="CustomerDOTNumber" />
+          <NavigationProperty Name="Drivers" Relationship="TFModel.FK_Driver_Company" FromRole="CustomerProfile" ToRole="Driver" />
+          <NavigationProperty Name="Inspection_Documents" Relationship="TFModel.FK_Inspection_Documents_Company" FromRole="CustomerProfile" ToRole="Inspection_Documents" />
+          <NavigationProperty Name="Location_Configuration" Relationship="TFModel.FK_Location_Configuration_CustomerProfiles" FromRole="CustomerProfile" ToRole="Location_Configuration" />
+          <NavigationProperty Name="Locations" Relationship="TFModel.FK_Location_CustomerProfiles" FromRole="CustomerProfile" ToRole="Location" />
+          <NavigationProperty Name="LocationMetadatas" Relationship="TFModel.FK_LocationMetadata_Customer" FromRole="CustomerProfile" ToRole="LocationMetadata" />
+          <NavigationProperty Name="ManualRSIs" Relationship="TFModel.FK_ManualRSI_Company" FromRole="CustomerProfile" ToRole="ManualRSI" />
+        </EntityType>
+        <EntityType Name="G_RPT_REG_CP_INSP_ID">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="INSPECTION_ID" Type="Int32" />
+          <Property Name="UNIT_NUMBER1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_ST_LICENSE1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_NUMBER2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE2" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_ST_LICENSE2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN2" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_NUMBER3" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE3" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEN_ST_LICENSE3" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN3" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER3" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_NUMBER4" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE4" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEN_ST_LICENSE4" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN4" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER4" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_NUMBER5" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE5" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_ST_LICENSE5" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN5" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER5" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_NUMBER6" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_TYPE6" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VEH_ST_LICENSE6" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UNIT_VIN6" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="COMPANY_NUMBER6" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LAST_NAME1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_FIRST_NAME1" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_MI1" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="INSP_LEVEL_CODE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="INSP_DATE" Type="DateTime" Precision="3" />
+          <Property Name="INSP_TIME" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="REPORT_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="REPORT_NUMBER1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="COUNTY_NAME1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LOCATION1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HM" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TOTAL_VIOL" Type="Int32" />
+          <Property Name="TOTAL_OOS" Type="Int32" />
+          <Property Name="CARRIER_NAME1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CARRIER_CITY1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CARRIER_STATE1" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LICENSE" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_LICENSE_STATE" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="DRIVER_DOB" Type="DateTime" Precision="3" />
+          <Property Name="ImportMessage" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DriverId" Type="Int32" />
+          <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="8000" FixedLength="false" Unicode="false" />
+          <Property Name="DriverLogProvided" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="VehicleRepairOrderProvided" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="DriverDisciplineIssued" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="DriverRelatedViolation" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="FailedToReportInspection" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="FailPreTripInspection" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ImproperLogFile" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="DocsRequested" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="DocsRequestedCount" Type="Int32" />
+          <Property Name="InitDocRequestDate" Type="DateTime" Precision="3" />
+          <Property Name="LastDocRequestDate" Type="DateTime" Precision="3" />
+          <Property Name="DeniedInspection" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="InspectionLinked" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ReportNbrKey" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyId" Type="Int32" />
+          <NavigationProperty Name="ManualRSIs" Relationship="TFModel.FK_ManualRSI_INSP_ID" FromRole="G_RPT_REG_CP_INSP_ID" ToRole="ManualRSI" />
+        </EntityType>
+        <EntityType Name="Inspection_Documents">
+          <Key>
+            <PropertyRef Name="DocumentId" />
+          </Key>
+          <Property Name="DocumentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocumentUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ManualRsiId" Type="Int32" Nullable="false" />
+          <Property Name="CompanyId" Type="Int32" />
+          <Property Name="InspectionId" Type="Int32" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_Inspection_Documents_Company" FromRole="Inspection_Documents" ToRole="CustomerProfile" />
+          <NavigationProperty Name="Inspection_Documents1" Relationship="TFModel.FK_Inspection_Documents_Inspection_Documents" FromRole="Inspection_Documents" ToRole="Inspection_Documents1" />
+          <NavigationProperty Name="Inspection_Documents2" Relationship="TFModel.FK_Inspection_Documents_Inspection_Documents" FromRole="Inspection_Documents1" ToRole="Inspection_Documents" />
+        </EntityType>
+        <EntityType Name="ManualRSI">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <Property Name="DOTNumber" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="InspectionID" Type="Int32" Nullable="false" />
+          <Property Name="ReportNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DriverLastName" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DriverFirstName" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DriverLicenseNumber" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DriverLicenseState" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="InspectionDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InspectionState" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Violations" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="OOS" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="NoticeNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DisciplineActionIssued" Type="Boolean" />
+          <Property Name="RepairWorkOrder" Type="Boolean" />
+          <Property Name="DriverLog" Type="Boolean" />
+          <Property Name="InspectionReceived" Type="Boolean" />
+          <Property Name="VehicleLicenseNumber" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CompanyVehicleNumber" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="OtherViolation" Type="Boolean" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="LocationCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DriverDOB" Type="DateTime" Precision="0" />
+          <Property Name="AdminNotes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="INSP_ID" Type="Int32" />
+          <NavigationProperty Name="CustomerProfile" Relationship="TFModel.FK_ManualRSI_Company" FromRole="ManualRSI" ToRole="CustomerProfile" />
+          <NavigationProperty Name="G_RPT_REG_CP_INSP_ID" Relationship="TFModel.FK_ManualRSI_INSP_ID" FromRole="ManualRSI" ToRole="G_RPT_REG_CP_INSP_ID" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Type="TFModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TFModel.AspNetUserClaim" Role="AspNetUserClaim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaim">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Type="TFModel.AspNetUser" Role="AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="TFModel.AspNetUserLogin" Role="AspNetUserLogin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogin">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AspNetUsers_Company">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="0..1" />
+          <End Type="TFModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="AspNetUser">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerDOTNumbers_CustomerProfiles">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.CustomerDOTNumber" Role="CustomerDOTNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="CustomerDOTNumber">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Driver_Company">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.Driver" Role="Driver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Driver">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Inspection_Documents_Company">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="0..1" />
+          <End Type="TFModel.Inspection_Documents" Role="Inspection_Documents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Inspection_Documents">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Location_Configuration_CustomerProfiles">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.Location_Configuration" Role="Location_Configuration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Location_Configuration">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Location_CustomerProfiles">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.Location" Role="Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LocationMetadata_Customer">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.LocationMetadata" Role="LocationMetadata" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="LocationMetadata">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ManualRSI_Company">
+          <End Type="TFModel.CustomerProfile" Role="CustomerProfile" Multiplicity="1" />
+          <End Type="TFModel.ManualRSI" Role="ManualRSI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerProfile">
+              <PropertyRef Name="CompanyID" />
+            </Principal>
+            <Dependent Role="ManualRSI">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ManualRSI_INSP_ID">
+          <End Type="TFModel.G_RPT_REG_CP_INSP_ID" Role="G_RPT_REG_CP_INSP_ID" Multiplicity="0..1" />
+          <End Type="TFModel.ManualRSI" Role="ManualRSI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="G_RPT_REG_CP_INSP_ID">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ManualRSI">
+              <PropertyRef Name="INSP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Inspection_Documents_Inspection_Documents">
+          <End Type="TFModel.Inspection_Documents" Role="Inspection_Documents" Multiplicity="1" />
+          <End Type="TFModel.Inspection_Documents" Role="Inspection_Documents1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Inspection_Documents">
+              <PropertyRef Name="DocumentId" />
+            </Principal>
+            <Dependent Role="Inspection_Documents1">
+              <PropertyRef Name="DocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AspNetUserRoles">
+          <End Type="TFModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
+          <End Type="TFModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="TFModelStoreContainer" CdmEntityContainer="TFPMEntities">
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="TFModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserClaims">
+            <EntityTypeMapping TypeName="TFModel.AspNetUserClaim">
+              <MappingFragment StoreEntitySet="AspNetUserClaims">
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="TFModel.AspNetUserLogin">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerDOTNumbers">
+            <EntityTypeMapping TypeName="TFModel.CustomerDOTNumber">
+              <MappingFragment StoreEntitySet="CustomerDOTNumbers">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="DOTTag" ColumnName="DOTTag" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Drivers">
+            <EntityTypeMapping TypeName="TFModel.Driver">
+              <MappingFragment StoreEntitySet="Driver">
+                <ScalarProperty Name="isDelete" ColumnName="isDelete" />
+                <ScalarProperty Name="MI" ColumnName="MI" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="LicenseNumber" ColumnName="LicenseNumber" />
+                <ScalarProperty Name="LicenseState" ColumnName="LicenseState" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="DriverID" ColumnName="DriverID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="G_RPT_REG_CP_CRASH_ID">
+            <EntityTypeMapping TypeName="TFModel.G_RPT_REG_CP_CRASH_ID">
+              <MappingFragment StoreEntitySet="G_RPT_REG_CP_CRASH_ID">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="DRIVER_BDAY" ColumnName="DRIVER_BDAY" />
+                <ScalarProperty Name="DRIVER_LIC_STATE" ColumnName="DRIVER_LIC_STATE" />
+                <ScalarProperty Name="DRIVER_LIC_NUMBER" ColumnName="DRIVER_LIC_NUMBER" />
+                <ScalarProperty Name="VEH_LIC_STATE" ColumnName="VEH_LIC_STATE" />
+                <ScalarProperty Name="VEH_LIC_NUMBER" ColumnName="VEH_LIC_NUMBER" />
+                <ScalarProperty Name="CARRIER_STATE" ColumnName="CARRIER_STATE" />
+                <ScalarProperty Name="CARRIER_CITY" ColumnName="CARRIER_CITY" />
+                <ScalarProperty Name="CARRIER_NAME" ColumnName="CARRIER_NAME" />
+                <ScalarProperty Name="HAZMAT_FLAG" ColumnName="HAZMAT_FLAG" />
+                <ScalarProperty Name="INJURIES" ColumnName="INJURIES" />
+                <ScalarProperty Name="FATALITIES1" ColumnName="FATALITIES1" />
+                <ScalarProperty Name="STATE1" ColumnName="STATE1" />
+                <ScalarProperty Name="CITY1" ColumnName="CITY1" />
+                <ScalarProperty Name="COUNTY" ColumnName="COUNTY" />
+                <ScalarProperty Name="LOCATION" ColumnName="LOCATION" />
+                <ScalarProperty Name="REPORT_NUMBER" ColumnName="REPORT_NUMBER" />
+                <ScalarProperty Name="REPORT_TIME" ColumnName="REPORT_TIME" />
+                <ScalarProperty Name="REPORT_DATE" ColumnName="REPORT_DATE" />
+                <ScalarProperty Name="TOW_AWAY" ColumnName="TOW_AWAY" />
+                <ScalarProperty Name="DRIVER_MI" ColumnName="DRIVER_MI" />
+                <ScalarProperty Name="DRIVER_FIRST_NAME" ColumnName="DRIVER_FIRST_NAME" />
+                <ScalarProperty Name="DRIVER_LAST_NAME" ColumnName="DRIVER_LAST_NAME" />
+                <ScalarProperty Name="SEQ_OF_EVENT4" ColumnName="SEQ_OF_EVENT4" />
+                <ScalarProperty Name="SEQ_OF_EVENT3" ColumnName="SEQ_OF_EVENT3" />
+                <ScalarProperty Name="SEQ_OF_EVENT2" ColumnName="SEQ_OF_EVENT2" />
+                <ScalarProperty Name="SEQ_OF_EVENT1" ColumnName="SEQ_OF_EVENT1" />
+                <ScalarProperty Name="RPT_REG_CP_CRASH_ID" ColumnName="RPT_REG_CP_CRASH_ID" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="TransId" ColumnName="TransId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="G_RPT_REG_CP_INSP_VIOL_DETAIL">
+            <EntityTypeMapping TypeName="TFModel.G_RPT_REG_CP_INSP_VIOL_DETAIL">
+              <MappingFragment StoreEntitySet="G_RPT_REG_CP_INSP_VIOL_DETAIL">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="POST_CRASH_FL" ColumnName="POST_CRASH_FL" />
+                <ScalarProperty Name="VIOL_OOS" ColumnName="VIOL_OOS" />
+                <ScalarProperty Name="VIOL_CAT" ColumnName="VIOL_CAT" />
+                <ScalarProperty Name="VIOL_UNIT" ColumnName="VIOL_UNIT" />
+                <ScalarProperty Name="INSPECTION_ID" ColumnName="INSPECTION_ID" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="TransID" ColumnName="TransID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="G_VIOL_CAT_TYPE_NAME">
+            <EntityTypeMapping TypeName="TFModel.G_VIOL_CAT_TYPE_NAME">
+              <MappingFragment StoreEntitySet="G_VIOL_CAT_TYPE_NAME">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="TransId" ColumnName="TransId" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="SEQ_ORDER1" ColumnName="SEQ_ORDER1" />
+                <ScalarProperty Name="INSP_VIOLATION_CATEGORY_DESC" ColumnName="INSP_VIOLATION_CATEGORY_DESC" />
+                <ScalarProperty Name="INSP_VIOLATION_CATEGORY_NAME1" ColumnName="INSP_VIOLATION_CATEGORY_NAME1" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="TFModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="LocCode" ColumnName="LocCode" />
+                <ScalarProperty Name="LocId" ColumnName="LocId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Location_Configuration">
+            <EntityTypeMapping TypeName="TFModel.Location_Configuration">
+              <MappingFragment StoreEntitySet="Location_Configuration">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Relation" ColumnName="Relation" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="LocConfigID" ColumnName="LocConfigID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LocationFieldTypes">
+            <EntityTypeMapping TypeName="TFModel.LocationFieldType">
+              <MappingFragment StoreEntitySet="LocationFieldType">
+                <ScalarProperty Name="FieldType" ColumnName="FieldType" />
+                <ScalarProperty Name="LocFID" ColumnName="LocFID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LocationMetadatas">
+            <EntityTypeMapping TypeName="TFModel.LocationMetadata">
+              <MappingFragment StoreEntitySet="LocationMetadata">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="LocId" ColumnName="LocId" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+                <ScalarProperty Name="FieldType" ColumnName="FieldType" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="LocConfigID" ColumnName="LocConfigID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="LocMID" ColumnName="LocMID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="TFModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerProfiles">
+            <EntityTypeMapping TypeName="TFModel.CustomerProfile">
+              <MappingFragment StoreEntitySet="CustomerProfiles">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+                <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
+                <ScalarProperty Name="CompanyLogo" ColumnName="CompanyLogo" />
+                <ScalarProperty Name="AccountOwnerEmail" ColumnName="AccountOwnerEmail" />
+                <ScalarProperty Name="AccountOwnerName" ColumnName="AccountOwnerName" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="G_RPT_REG_CP_INSP_ID">
+            <EntityTypeMapping TypeName="TFModel.G_RPT_REG_CP_INSP_ID">
+              <MappingFragment StoreEntitySet="G_RPT_REG_CP_INSP_ID">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ReportNbrKey" ColumnName="ReportNbrKey" />
+                <ScalarProperty Name="InspectionLinked" ColumnName="InspectionLinked" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="DeniedInspection" ColumnName="DeniedInspection" />
+                <ScalarProperty Name="LastDocRequestDate" ColumnName="LastDocRequestDate" />
+                <ScalarProperty Name="InitDocRequestDate" ColumnName="InitDocRequestDate" />
+                <ScalarProperty Name="DocsRequestedCount" ColumnName="DocsRequestedCount" />
+                <ScalarProperty Name="DocsRequested" ColumnName="DocsRequested" />
+                <ScalarProperty Name="ImproperLogFile" ColumnName="ImproperLogFile" />
+                <ScalarProperty Name="FailPreTripInspection" ColumnName="FailPreTripInspection" />
+                <ScalarProperty Name="FailedToReportInspection" ColumnName="FailedToReportInspection" />
+                <ScalarProperty Name="DriverRelatedViolation" ColumnName="DriverRelatedViolation" />
+                <ScalarProperty Name="DriverDisciplineIssued" ColumnName="DriverDisciplineIssued" />
+                <ScalarProperty Name="VehicleRepairOrderProvided" ColumnName="VehicleRepairOrderProvided" />
+                <ScalarProperty Name="DriverLogProvided" ColumnName="DriverLogProvided" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="DriverId" ColumnName="DriverId" />
+                <ScalarProperty Name="ImportMessage" ColumnName="ImportMessage" />
+                <ScalarProperty Name="DRIVER_DOB" ColumnName="DRIVER_DOB" />
+                <ScalarProperty Name="DRIVER_LICENSE_STATE" ColumnName="DRIVER_LICENSE_STATE" />
+                <ScalarProperty Name="DRIVER_LICENSE" ColumnName="DRIVER_LICENSE" />
+                <ScalarProperty Name="CARRIER_STATE1" ColumnName="CARRIER_STATE1" />
+                <ScalarProperty Name="CARRIER_CITY1" ColumnName="CARRIER_CITY1" />
+                <ScalarProperty Name="CARRIER_NAME1" ColumnName="CARRIER_NAME1" />
+                <ScalarProperty Name="TOTAL_OOS" ColumnName="TOTAL_OOS" />
+                <ScalarProperty Name="TOTAL_VIOL" ColumnName="TOTAL_VIOL" />
+                <ScalarProperty Name="HM" ColumnName="HM" />
+                <ScalarProperty Name="LOCATION1" ColumnName="LOCATION1" />
+                <ScalarProperty Name="COUNTY_NAME1" ColumnName="COUNTY_NAME1" />
+                <ScalarProperty Name="REPORT_NUMBER1" ColumnName="REPORT_NUMBER1" />
+                <ScalarProperty Name="REPORT_STATE" ColumnName="REPORT_STATE" />
+                <ScalarProperty Name="INSP_TIME" ColumnName="INSP_TIME" />
+                <ScalarProperty Name="INSP_DATE" ColumnName="INSP_DATE" />
+                <ScalarProperty Name="INSP_LEVEL_CODE" ColumnName="INSP_LEVEL_CODE" />
+                <ScalarProperty Name="DRIVER_MI1" ColumnName="DRIVER_MI1" />
+                <ScalarProperty Name="DRIVER_FIRST_NAME1" ColumnName="DRIVER_FIRST_NAME1" />
+                <ScalarProperty Name="DRIVER_LAST_NAME1" ColumnName="DRIVER_LAST_NAME1" />
+                <ScalarProperty Name="COMPANY_NUMBER6" ColumnName="COMPANY_NUMBER6" />
+                <ScalarProperty Name="UNIT_VIN6" ColumnName="UNIT_VIN6" />
+                <ScalarProperty Name="VEH_ST_LICENSE6" ColumnName="VEH_ST_LICENSE6" />
+                <ScalarProperty Name="UNIT_TYPE6" ColumnName="UNIT_TYPE6" />
+                <ScalarProperty Name="UNIT_NUMBER6" ColumnName="UNIT_NUMBER6" />
+                <ScalarProperty Name="COMPANY_NUMBER5" ColumnName="COMPANY_NUMBER5" />
+                <ScalarProperty Name="UNIT_VIN5" ColumnName="UNIT_VIN5" />
+                <ScalarProperty Name="VEH_ST_LICENSE5" ColumnName="VEH_ST_LICENSE5" />
+                <ScalarProperty Name="UNIT_TYPE5" ColumnName="UNIT_TYPE5" />
+                <ScalarProperty Name="UNIT_NUMBER5" ColumnName="UNIT_NUMBER5" />
+                <ScalarProperty Name="COMPANY_NUMBER4" ColumnName="COMPANY_NUMBER4" />
+                <ScalarProperty Name="UNIT_VIN4" ColumnName="UNIT_VIN4" />
+                <ScalarProperty Name="VEN_ST_LICENSE4" ColumnName="VEN_ST_LICENSE4" />
+                <ScalarProperty Name="UNIT_TYPE4" ColumnName="UNIT_TYPE4" />
+                <ScalarProperty Name="UNIT_NUMBER4" ColumnName="UNIT_NUMBER4" />
+                <ScalarProperty Name="COMPANY_NUMBER3" ColumnName="COMPANY_NUMBER3" />
+                <ScalarProperty Name="UNIT_VIN3" ColumnName="UNIT_VIN3" />
+                <ScalarProperty Name="VEN_ST_LICENSE3" ColumnName="VEN_ST_LICENSE3" />
+                <ScalarProperty Name="UNIT_TYPE3" ColumnName="UNIT_TYPE3" />
+                <ScalarProperty Name="UNIT_NUMBER3" ColumnName="UNIT_NUMBER3" />
+                <ScalarProperty Name="COMPANY_NUMBER2" ColumnName="COMPANY_NUMBER2" />
+                <ScalarProperty Name="UNIT_VIN2" ColumnName="UNIT_VIN2" />
+                <ScalarProperty Name="VEH_ST_LICENSE2" ColumnName="VEH_ST_LICENSE2" />
+                <ScalarProperty Name="UNIT_TYPE2" ColumnName="UNIT_TYPE2" />
+                <ScalarProperty Name="UNIT_NUMBER2" ColumnName="UNIT_NUMBER2" />
+                <ScalarProperty Name="COMPANY_NUMBER1" ColumnName="COMPANY_NUMBER1" />
+                <ScalarProperty Name="UNIT_VIN1" ColumnName="UNIT_VIN1" />
+                <ScalarProperty Name="VEH_ST_LICENSE1" ColumnName="VEH_ST_LICENSE1" />
+                <ScalarProperty Name="UNIT_TYPE1" ColumnName="UNIT_TYPE1" />
+                <ScalarProperty Name="UNIT_NUMBER1" ColumnName="UNIT_NUMBER1" />
+                <ScalarProperty Name="INSPECTION_ID" ColumnName="INSPECTION_ID" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="TransID" ColumnName="TransID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Inspection_Documents">
+            <EntityTypeMapping TypeName="TFModel.Inspection_Documents">
+              <MappingFragment StoreEntitySet="Inspection_Documents">
+                <ScalarProperty Name="InspectionId" ColumnName="InspectionId" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="ManualRsiId" ColumnName="ManualRsiId" />
+                <ScalarProperty Name="DocumentUrl" ColumnName="DocumentUrl" />
+                <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ManualRSIs">
+            <EntityTypeMapping TypeName="TFModel.ManualRSI">
+              <MappingFragment StoreEntitySet="ManualRSI">
+                <ScalarProperty Name="INSP_ID" ColumnName="INSP_ID" />
+                <ScalarProperty Name="AdminNotes" ColumnName="AdminNotes" />
+                <ScalarProperty Name="DriverDOB" ColumnName="DriverDOB" />
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="OtherViolation" ColumnName="OtherViolation" />
+                <ScalarProperty Name="CompanyVehicleNumber" ColumnName="CompanyVehicleNumber" />
+                <ScalarProperty Name="VehicleLicenseNumber" ColumnName="VehicleLicenseNumber" />
+                <ScalarProperty Name="InspectionReceived" ColumnName="InspectionReceived" />
+                <ScalarProperty Name="DriverLog" ColumnName="DriverLog" />
+                <ScalarProperty Name="RepairWorkOrder" ColumnName="RepairWorkOrder" />
+                <ScalarProperty Name="DisciplineActionIssued" ColumnName="DisciplineActionIssued" />
+                <ScalarProperty Name="NoticeNumber" ColumnName="NoticeNumber" />
+                <ScalarProperty Name="OOS" ColumnName="OOS" />
+                <ScalarProperty Name="Violations" ColumnName="Violations" />
+                <ScalarProperty Name="InspectionState" ColumnName="InspectionState" />
+                <ScalarProperty Name="InspectionDate" ColumnName="InspectionDate" />
+                <ScalarProperty Name="DriverLicenseState" ColumnName="DriverLicenseState" />
+                <ScalarProperty Name="DriverLicenseNumber" ColumnName="DriverLicenseNumber" />
+                <ScalarProperty Name="DriverFirstName" ColumnName="DriverFirstName" />
+                <ScalarProperty Name="DriverLastName" ColumnName="DriverLastName" />
+                <ScalarProperty Name="ReportNumber" ColumnName="ReportNumber" />
+                <ScalarProperty Name="InspectionID" ColumnName="InspectionID" />
+                <ScalarProperty Name="DOTNumber" ColumnName="DOTNumber" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="TFModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetUser">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="AspNetRole">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

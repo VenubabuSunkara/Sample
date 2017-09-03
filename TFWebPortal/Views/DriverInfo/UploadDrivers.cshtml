@@ -1,0 +1,145 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{
+    ViewBag.Title = "UploadDrivers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using TransForce.Web.Portal.Models
+
+
+<style>
+    .modal-dialog {
+        position: initial;
+    }
+</style>
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/commonfunctions.js"></script>
+<script src="~/Scripts/customValidation.js"></script>
+<script type="text/javascript">
+    var companyID;
+    $(document).ready(function () {
+        $('#CompanyList').prop('selectedIndex',0);
+        $("#fileDriver").val('');
+        $("#divLoading").hide();
+        var data=@Html.Raw(Json.Encode(Model));
+        companyID = data.CompanyID;
+        //Account admin login time disabled the controles
+        if (companyID != 0) {
+            $("#CompanyID").val(companyID);
+            $('.hideSuper').attr('disabled', true);
+
+        }
+        if (data.SuccessMesage != null) {
+            $("#modelMessage").html(data.SuccessMesage);
+            $('#myModal').modal('show');
+        }
+        if (data.UploadFailMessage != null) {
+            $("#modelMessage").html(data.UploadFailMessage + '<a href="@Url.Action("DownloadFail", "DriverInfo")?FileName=' + '@ViewBag.FileName' + '">Download the error file here</a>');
+            $('#myModal').modal('show');
+        }
+
+        if (data.ExMessage != null) {
+            $("#lblMessage").html(data.ExMessage);
+        }
+        $("#CompanyList").on('change',function(){
+            if($(this).val!=""){
+                companyID=$(this).val();
+                $("#CompanyID").val(companyID);
+            }
+        });
+        //validating the file
+        $("#fileDriver").change(function () {
+            var _validFileExtensions = [".csv", ".txt"];
+            $("#lblLocationError").html('');
+            if (!Validate(this, _validFileExtensions)) {
+                $("#fileDriver").val('');
+                $('#lblDriverError').css("display", "block");
+                $("#lblDriverError").html("The file type isn't an acceptable format. Please upload new file in an acceptable format.");
+                return false;
+            }
+            if ((this.files[0].size > 5242880)) {
+                $("#fileDriver").val('');
+                $('#lblDriverError').css("display", "block");
+                $("#lblDriverError").html("The upload file size is reached maxim. Please upload below 5MB size.");
+                return false;
+            }
+
+            $("#btnSave").removeAttr("disabled");
+            $('#lblDriverError').css("display", "none");
+        });
+
+        //
+        $("#btnSave").click(function () {
+            var driver = $("#fileDriver").val();
+            if(companyID ==0)
+            {
+                companyID=$("#CompanyList").val();
+            }
+            if (validateLocation(companyID, driver)==false) {
+                return false;
+            }
+            $("#CompanyID").val(companyID);
+            $("#divLoading").show();
+        });
+
+
+
+    });
+</script>
+<div class="row">
+    <div class="col-md-offset-4 col-md-8">
+        <section id="loginForm" class="login-form">
+            @using (Html.BeginForm("UploadDrivers", "DriverInfo", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h2>Upload Drivers</h2>
+                <hr />
+                <label id="lblError" style="color:red;display:none"></label>
+                @Html.HiddenFor(m => m.CompanyID)
+                if (Model.CompanyList != null)
+                {
+                    <div class="form-group hideSuper">
+                        @Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-3 control-label" })
+                        <div class="col-md-14">
+                            @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Please select", new { @class = "form-control" })
+                            <label id="lblCompanyError" style="color:red" class="driver-error"></label>
+                        </div>
+                    </div>
+                }
+                <div class="form-group">
+                    @Html.Label("lblDriver", "Select Driver File :", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-14">
+                        <input type="file" id="fileDriver" name="fileDriver" max-size=1024 />
+                        <label id="lblDriverError" style="color:red" class="driver-error"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-md-14">
+                        <input type="submit" id="btnSave" value="Upload" disabled="disabled" class="btn btn-default" />
+                        <label id="lblMessage" style="color:red" class="driver-error"></label>
+                    </div>
+                </div>
+            }
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true" data-backdrop="static">
+                <div id="divSuccess" class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p id="modelMessage"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+    top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001;
+    opacity: .8; filter: alpha(opacity=70);display:none">
+    <p style="position: absolute; top: 30%; left: 45%; color: White;">
+        <img src="~/Content/loading.gif">
+    </p>
+</div>

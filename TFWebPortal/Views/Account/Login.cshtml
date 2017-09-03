@@ -1,0 +1,93 @@
+﻿@using TransForce.Web.Portal.Models
+@using System.Configuration
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var data=@Html.Raw(Json.Encode(Model));
+        //$("#btnLogin").click(function () {
+        //    if (grecaptcha.getResponse() == '') {
+        //        $("#lblcaptchaError").html("Please select the captcha");
+        //        return false;
+        //    }
+        //})
+
+        if (data != null) {
+            $('#lblError').css("display", "block");
+            $("#lblError").html(data.ErrorMessage);
+        }
+        else {
+            $('#lblError').css("display", "none");
+        }
+    });
+
+</script>
+<div class="row">
+    <div class="col-md-offset-4 col-md-8">
+        <section id="loginForm" class="login-form">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = "~/Dashboard" }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h4>Use a local account to log in.</h4>
+                <hr />
+                <label id="lblError" style="color:red;display:none"></label>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Account Number<span style='color:red'>*</span>:</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.AccountNo, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.AccountNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Email<span style='color:red'>*</span>:</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Password<span style='color:red'>*</span>:</label>
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="g-recaptcha" data-sitekey="@ConfigurationManager.AppSettings["Captchasitekey"].ToString()"></div>
+                        <span class="text-danger">@ViewBag.CaptchaErrorMessage </span>
+                        <label id="lblcaptchaError" style="color:red"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Log in" class="btn btn-default" id="btnLogin" />
+                        &nbsp;
+                        @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-default" })
+                    </div>
+                </div>
+                <p>
+                    @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                </p>
+                <br>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+}

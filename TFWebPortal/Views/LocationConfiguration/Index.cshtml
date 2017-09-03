@@ -1,0 +1,289 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container-fluid main-content">
+    <div class="form-group control-group form-inline">
+        <label class="col-md-2 control-label">Select Company<span style='color:red'>*</span>:</label>
+        @*@Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-2 control-label" })*@
+        <div class="controls">
+            @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Please select", new { @class = "form-control" })
+            <label id="lblCompanyError" style="color:red" class="location-error"></label>
+        </div>
+    </div>
+    @*<div class="form-group hideSuper">
+            @Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.DropDownList("CompanyList", Session["CompanyList"] as SelectList, "--Select--")
+                <label id="lblCompanyError" style="color:red" class="location-error"></label>
+            </div>
+        </div>*@
+
+    <input type="button" id="btnParent" value="Add Parent to Location" class="btn btn-default" />
+    <br />
+    <div class="form-group control-group form-inline" id="areaDiv" style="display:none;">
+        @Html.Label("", "Area", new { @class = "col-md-2 control-label" })
+        <div class="controls">
+            @Html.TextBox("Area", "", new { @class = "form-control", @maxlength = "50" })
+            <input type="button" id="btnAddArea" value="Add" class="btn btn-default" />
+            <input type="button" id="btnDeleteArea" value="Delete" class="btn btn-default" />
+        </div>
+        <span id="areaSuccessSpan" class="text-success" style="display:none;"></span>
+        <span id="areaErrorSpan" class="text-danger" style="display:none;">The Area field is required.</span>
+    </div>
+
+    <input type="button" id="btnGrandParent" value="Add Parent to Area" class="btn btn-default" style="display:none;" />
+    <br />
+    <div class="form-group control-group form-inline" id="regionDiv" style="display:none;">
+        @Html.Label("", "Region", new { @class = "col-md-2 control-label" })
+        <div class="controls">
+            @Html.TextBox("Region", "", new { @class = "form-control", @maxlength = "50" })
+            <input type="button" id="btnAddRegion" value="Add" class="btn btn-default" />
+            <input type="button" id="btnDeleteRegion" value="Delete" class="btn btn-default" />
+        </div>
+        <span id="regionSuccessSpan" class="text-success" style="display:none;"></span>
+        <span id="regionErrorSpan" class="text-danger" style="display:none;">The Region field is required.</span>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Back to Dashboard", "Index", "Dashboard")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+
+    var areaLocConfigID = "";
+    var regionLocConfigID = "";
+    //var companyId = $("#CompanyList option:selected").val();
+    var companyId = "";
+
+    $(document).ready(function () {
+        //$('#CompanyList').prop('selectedIndex', 0);
+        $("#CompanyList").on("change", function () {
+            companyId = $(this).find("option:selected").val();
+            $("#lblCompanyError").html('');
+            GetLocation(companyId);
+        });
+        $("#btnDeleteArea").hide();
+        $("#btnDeleteRegion").hide();
+
+        //companyId = $("txtComapnyId").val();
+        //GetLocation(companyId);
+
+        $("#btnParent").click(function () {
+            companyId = $("#CompanyList").val();
+            if (companyId == "") {
+                $("#lblCompanyError").html('Please select the company');
+                return false;
+            }
+            //$("#CompanyList").attr("disabled", true);
+            $("#lblCompanyError").html('');
+            $("#areaDiv").css("display", "block");
+        });
+
+        $("#btnAddArea").click(function () {
+            if (companyId != "" && companyId != undefined) {
+                if ($.trim($("#Area").val()) != "") {
+                    $("#areaErrorSpan").css("display", "none");
+                    var areaObj = {
+                        CompanyID: companyId,
+                        Key: "Area",
+                        Value: $("#Area").val(),
+                        Relation: 1
+                    };
+                    $.post("/LocationConfiguration/AddArea", { model: areaObj }, function (data) {
+                        if (data.status == "Success") {
+                            areaLocConfigID = data.locationData.LocConfigID;
+                            $("#btnAddArea").hide();
+                            $("#areaErrorSpan").css("display", "none");
+                            $("#areaSuccessSpan").css("display", "block");
+                            $("#areaSuccessSpan").text("The " + $("#Area").val() + " parent of location is saved successfully.");
+                            $("#areaSuccessSpan").delay(4000).fadeOut();
+                            //$("#Area").attr('readonly', true);
+                            $("#btnDeleteArea").show();
+                            $("#btnGrandParent").css("display", "block");
+                        } else {
+                            //alert(data.status);
+                            areaLocConfigID = "";
+                            //$("#Area").attr('readonly', false);
+                            $("#btnDeleteArea").hide();
+                            $("#btnAddArea").show();
+                            $("#areaSuccessSpan").text("");
+                            $("#areaSuccessSpan").css("display", "none");
+                        }
+                    }).fail(function (response) {
+                        //alert(response.responseText);
+                    }).error(function (response) {
+                        //alert(response.responseText);
+                    });
+                }
+                else {
+                    $("#areaErrorSpan").css("display", "block");
+                }
+            }
+            else {
+                alert("Customer Not Found.");
+            }
+        });
+        $("#btnDeleteArea").click(function () {
+            if ($.trim($("#Area").val()) != "" && regionLocConfigID == "") {
+                if (confirm('Are you sure you want to delete parent to Location?')) {
+                    var areaObj2 = {
+                        LocConfigID: areaLocConfigID,
+                        CompanyID: companyId,
+                        Key: "Area",
+                        Value: $("#Area").val(),
+                        Relation: 1
+                    };
+                    $.post("/LocationConfiguration/DeleteLocationConfig", { model: areaObj2 }, function (deleteArea) {
+                        if (deleteArea.status == "Success") {
+                            areaLocConfigID = "";
+                            $("#Area").val("");
+                            //$("#Area").attr('readonly', false);
+                            $("#btnDeleteArea").hide();
+                            $("#btnGrandParent").css("display", "none");
+                            $("#regionDiv").css("display", "none");
+                            $("#btnAddArea").show();
+                            $("#areaDiv").css("display", "none");
+                            //alert(deleteArea.result);
+                        }
+                        else {
+                            //alert(deleteArea.status);
+                        }
+                    }).fail(function (response) {
+                        //alert(response.responseText);
+                    }).error(function (response) {
+                        //alert(response.responseText);
+                    });
+                } else {
+                }
+            }
+            else {
+                alert("Sorry cannot delete " + $("#Area").val() + " because " + $("#Region").val() + " exist. Please delete " + $("#Region").val() + " before deleting " + $("#Area").val() + ".");
+            }
+        });
+
+        $("#btnGrandParent").click(function () {
+            $("#regionDiv").css("display", "block");
+        });
+
+        $("#btnAddRegion").click(function () {
+            if ($.trim($("#Region").val()) != "") {
+                $("#regionErrorSpan").css("display", "none");
+                var regionObj = {
+                    CompanyID: companyId,
+                    Key: "Region",
+                    Value: $("#Region").val(),
+                    Relation: 2
+                };
+                $.post("/LocationConfiguration/AddRegion", { model: regionObj }, function (result) {
+                    if (result.status == "Success") {
+                        regionLocConfigID = result.locationData.LocConfigID;
+                        $("#btnAddRegion").hide();
+                        $("#regionSuccessSpan").css("display", "block");
+                        $("#regionSuccessSpan").text("The " + $("#Region").val() + " parent of " + $("#Area").val() + " is saved successfully.");
+                        $("#regionSuccessSpan").delay(4000).fadeOut();
+                        //$("#Region").attr('readonly', true);
+                        $("#btnDeleteRegion").show();
+                    } else {
+                        alert(result.status);
+                        regionLocConfigID = "";
+                        //$("#Region").attr('readonly', false);
+                        $("#btnDeleteRegion").hide();
+                        $("#btnAddRegion").show();
+                        $("#regionSuccessSpan").text("");
+                        $("#regionSuccessSpan").css("display", "none");
+                    }
+                });
+            } else {
+                $("#regionErrorSpan").css("display", "block");
+            }
+        });
+        $("#btnDeleteRegion").click(function () {
+            if ($.trim($("#Region").val()) != "" && regionLocConfigID != "") {
+                if (confirm("Are you sure you want to delete " + $("#Region").val() + " parent of " + $("#Area").val() + "?")) {
+                    var regionObj2 = {
+                        LocConfigID: regionLocConfigID,
+                        CompanyID: companyId,
+                        Key: "Region",
+                        Value: $("#Region").val(),
+                        Relation: 1
+                    };
+                    $.post("/LocationConfiguration/DeleteLocationConfig", { model: regionObj2 }, function (deleteRegion) {
+                        if (deleteRegion.status == "Success") {
+                            $("#Region").val("");
+                            regionLocConfigID = "";
+                            $("#btnDeleteRegion").hide();
+                            $("#btnAddRegion").show();
+                            $("#regionDiv").css("display", "none");
+                            //alert(deleteRegion.result);
+                        }
+                        else {
+                            //alert(deleteRegion.status);
+                        }
+                    }).fail(function (response) {
+                        //alert(response.responseText);
+                    }).error(function (response) {
+                        //alert(response.responseText);
+                    });
+                } else {
+                }
+            }
+            else {
+                alert("Sorry cannot delete " + $("#Region").val() + ".");
+            }
+        });
+    });
+
+    function GetLocation(companyId) {
+        if (companyId != "") {
+            $.post("/LocationConfiguration/GetLocationConfigByCompanyID", { CompanyID: companyId }, function (list) {
+                if (list.status == "Success") {
+                    if (list.locationData.length != 0 && list.locationData.length < 3) {
+                        if (list.locationData[0] != null) {
+                            if (list.locationData[0].Key == "Area") {
+                                $("#Area").val(list.locationData[0].Value);
+                                $("#areaDiv").css("display", "block");
+                                areaLocConfigID = list.locationData[0].LocConfigID;
+                                $("#btnAddArea").hide();
+                                $("#btnDeleteArea").show();
+                                $("#btnGrandParent").css("display", "block");
+                            }
+                        }
+                        if (list.locationData[1] != null) {
+                            if (list.locationData[1].Key == "Region") {
+                                regionLocConfigID = list.locationData[1].LocConfigID;
+                                $("#regionDiv").css("display", "block");
+                                $("#Region").val(list.locationData[1].Value);
+                                $("#btnAddRegion").hide();
+                                $("#btnDeleteRegion").show();
+                            }
+                        }
+                    }
+                    else {
+                        $("#Area").val("");
+                        $("#areaDiv").css("display", "none");
+                        $("#regionDiv").css("display", "none");
+                        $("#btnGrandParent").css("display", "none");
+                        $("#Region").val("");
+                    }
+                }
+                else {
+                    //alert(list.status);
+                }
+            }).fail(function (response) {
+                //alert(response.responseText);
+            }).error(function (response) {
+                //alert(response.responseText);
+            });
+        }
+        else {
+            $("#Area").val("");
+            $("#areaDiv").css("display", "none");
+            $("#regionDiv").css("display", "none");
+            $("#btnGrandParent").css("display", "none");
+            $("#Region").val("");
+        }
+    }
+</script>

@@ -1,0 +1,120 @@
+﻿<script src="~/Scripts/commonfunctions.js"></script>
+<script>
+    $(document).ready(function () {
+        //validating the logo
+        //$("#postedFiles").change(function () {
+        //    $("#lblDOCError").html('');
+        //    var _validFileExtensions = [".doc", ".docx", ".pdf"];
+        //    for (var i = 0; i < this.files.length; i++) {
+        //        $('#lblDOCError').css("display", "block");
+        //        if (!Validate(this, _validFileExtensions)) {
+        //            $("#lblDOCError").html("Please select .doc or .docx or .pdf files");
+        //            return false;
+        //        }
+        //        else if ((this.files[i].size > 5048576)) {
+        //            $("#lblDOCError").html("Documnet must be less than 5 MB");
+        //            return false;
+        //        }
+        //    }
+        //    $('#lblDOCError').css("display", "none");
+        //});
+
+        //$.ajax({
+        //    url: 'Inspection/UploadInspectionDocumnets',
+        //    type: "POST",
+        //    data: formData,
+        //    processData: false,
+        //    contentType: false,
+        //    enctype: 'multipart/form-data',
+        //    success: function (result) {
+
+        //        if (result.Success) {
+        //            alert(result);
+        //        }
+        //        eval(result.Script);
+        //    },
+        //    error: function () {
+        //        alert("خطا!");
+        //    }
+
+        //})
+
+        $("#btnUpload").click(function () {
+            //$("#lblDOCError").html('');
+            //var _validFileExtensions = [".doc", ".docx", ".pdf"];
+            //var fileUpload = $("#postedFiles").get(0);
+            //if (fileUpload.value == "") {
+            //    $("#lblDOCError").html("Please select the file");
+            //    return false;
+            //}
+            //for (var i = 0; i < fileUpload.files.length; i++) {
+            //    $('#lblDOCError').css("display", "block");
+            //    if (!Validate(fileUpload, _validFileExtensions)) {
+            //        $("#lblDOCError").html("Please select .doc or .docx or .pdf files");
+            //        return false;
+            //    }
+            //    else if ((fileUpload.files[i].size > 5048576)) {
+            //        $("#lblDOCError").html("Documnet must be less than 5 MB");
+            //        return false;
+            //    }
+            //}
+
+            //$('#lblDOCError').css("display", "none");
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined) {
+
+
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                fileData.append('InspectionId', manualInspectionId);
+                fileData.append('CompanyId', companyID);
+
+                $.ajax({
+                    url: '/Inspection/UploadInspectionDocumnets',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result) {
+                        $("#postedFiles").val('');
+                        alert(result);
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+        });
+    })
+
+</script>
+@*<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Upload Inspection Documnets</title>
+    </head>
+    <body>*@
+<div class="form-group control-group form-inline" id="fileUploadDiv">
+    @*<label class="control-label">Select File:</label>*@
+    <div class="controls">
+        @*<span>Select File:</span>*@
+        <input type="file" id="postedFiles" class="fileUploadControls" name="postedFiles" multiple="multiple" />
+        @*<hr />*@
+        <input type="button" id="btnUpload" value="Upload" class="fileUploadControls" />
+        <br />
+        <label id="lblDOCError" style="color:red" class="Upload-error"></label>
+    </div>
+</div>
+@*</body>
+    </html>*@

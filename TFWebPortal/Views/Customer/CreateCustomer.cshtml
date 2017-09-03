@@ -1,0 +1,626 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{TransForce.Web.Portal.Models.UserModel userData = Session["UserData"] as TransForce.Web.Portal.Models.UserModel;}
+
+@{
+    ViewBag.Title = "CreateCustomer";
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.css">
+
+<script src="~/Scripts/customValidation.js"></script>
+<script src="~/Scripts/commonfunctions.js"></script>
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<style>
+    .disabled {
+        pointer-events: none;
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+</style>
+<script type="text/javascript">
+    var customerID;
+    var dotListVM;
+    var dotNumber;
+    var dOtTag;
+    var dotStatus;
+    var customerName;
+    var usersList;
+    var acctNumber;
+    var roleName;
+    $(document).ready(function () {
+
+        //Address validation for max length.
+        $('textarea').on('paste keyup keydown', function (event) {
+            var element = this;
+            setTimeout(function () {
+                if ($(element).val().length > 500) {
+                    if (event.type == "paste") {
+                        $(element).val($(element).val().substr(0, 500))
+                    } else {
+                        $(element).val($(element).val().slice(0, -1));
+                    }
+                    // alert("excceded more then 500 characters");
+                } else {
+                    return true;
+                }
+            }, 100);
+        });
+
+
+
+
+        var byteResult;
+        $('#cbCustomerStatus').prop("checked", true);
+
+        //Account admin login time disabled the controles
+        if ('@(ViewBag.UserRole)' == "AccountAdmin") {
+
+            $('.editDot').addClass('disabled');
+            $('.deleteDot').addClass('disabled');
+
+            $('#IsActive').prop("checked", true);
+            $('.customerread').attr('readonly', true)
+            $('.btndisable').attr('disabled',true);
+            $('.customerread').attr('disabled', true)
+        }
+
+        //binding data in edit time
+        if ('@(ViewBag.UserRole)' != '') {
+            $('#divStatus').css("display", "block");
+            var customerData = @Html.Raw(Json.Encode(Model));
+            $('#cbCustomerStatus').prop("checked", customerData.isActive);
+            CustomerSuccess(customerData.AccountNumber,customerData.CompanyID,customerData.CustomerName);
+            $('#imgPreview').css("display", "block");
+            $('#imgPreview').attr('src', JSON.parse(customerData.CompanyLogo).replace(/&quot;/g, '"'));
+            byteResult = $('#imgPreview').attr('src');
+        }
+
+        //binding src to imgPreview
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imgPreview').css("display", "block");
+                    $('#imgPreview').attr('src', e.target.result);
+                    byteResult = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+
+        //validating the logo
+        $("#fileLogo").change(function () {
+            $("#lblLogoError").html('');
+            var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
+            if ((this.files[0].size > 1048576) || !Validate(this,_validFileExtensions)) {
+                $("#fileLogo").val('');
+                $('#imgPreview').css("display", "none");
+                $('#lblfileError').css("display", "block");
+                $('#imgPreview').attr('src', '');
+                $("#lblLogoError").html("Customer logo must be less than 1 MB or select image files");
+                return false;
+            }
+            $('#lblfileError').css("display", "none");
+            readURL(this);
+        });
+
+
+
+        $("#btnAddDot").on("click", function (e) {
+            var url = $(this).data("url");
+            $.get(url, function (data) {
+                //dotNumber = $("#dots-data-table_filter").find('input').val();
+                $('#createDotContainer').html(data);
+                $('#createDotModal').modal('show');
+            });
+        });
+
+
+
+        $('#dots-data-table').on("click", ".editDot", function (event) {
+            event.preventDefault();
+            var url = $(this).attr("href");
+            dotNumber = $(this).closest('tr').children('td:eq(0)').text();
+            dOtTag = $(this).closest('tr').children('td:eq(1)').text();
+            dotStatus = $(this).closest('tr').children('td:eq(2)').text() == "Y" ? true : false;
+            $.get(url, function (data) {
+                $('#createDotContainer').html(data);
+                $('#createDotModal').modal('show');
+            });
+
+        });
+
+
+        $('#dots-data-table').on("click", ".deleteDot", function (event) {
+            //if ($(this).closest('tr').children('td:eq(2)').text() != 'inactive') {
+            var result = confirm("Want to delete?");
+            if (result) {
+                event.preventDefault();
+                var url = $(this).attr("href");
+                $.get(url, function (data) {
+                    dotListVM.refresh();
+                });
+            }
+            //}
+            return false;
+        });
+
+        function refreshDot() {
+            if ($.trim($("#CompanyID").val()).length != 0) {
+                dotListVM = {
+                    DOtdt: null,
+                    init: function (event) {
+                        DOtdt = $('#dots-data-table').DataTable({
+                            "ajax": {
+                                "url": "/CustomerDOT/GetCustomerDOTNumber?CustomerId=" + $("#CompanyID").val(),
+                                "type": "GET",
+                                "datatype": "json",
+                            },
+                            "oLanguage": {
+                                "sEmptyTable": "No DOT Numbers found in this company"
+                            },
+                            "order": [[3,'desc'],[4,'desc']],
+                            "columns": [
+                                   { "title": "DOT Number", "data": "DOTNumber", "searchable": true },
+                                                            { "title": "DOT Tag", "data": "DOTTag", "searchable": false },
+                                                            {
+                                                                "title": "Is Active", "data": "IsActive", "searchable": false,
+                                                                "render": function (data) {
+                                                                    return data == true ? "Y" : "N";
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Created On", "data": "CreatedOn", "searchable": false,
+                                                                "render": function (data) {
+                                                                    return dateConverter(data) + " " + timeConverter(data);
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Modified On", "data": "ModifiedOn", "searchable": false,
+                                                                "render": function (data) {
+                                                                    if (data != null) {
+                                                                        return dateConverter(data) + " " + timeConverter(data);
+                                                                    }
+                                                                    return data;
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Actions",
+                                                                "data": "ItemID",
+                                                                "searchable": false,
+                                                                "sortable": false,
+                                                                "render": function (data, type, full, meta) {
+                                                                    if ('@(ViewBag.UserRole)' == "AccountAdmin") {
+                                                                        return '<a href="@Url.Action("EditDotNumber", "CustomerDOT")?id=' + customerID + '&&ItemId=' + data + '" class="editDot disabled">Edit</a> | <a href="@Url.Action("DeleteDotNumber", "CustomerDOT")?id=' + data + '" class="deleteDot disabled">Delete</a>';
+                                                                    }
+                                                                    else{
+                                                                        return '<a href="@Url.Action("EditDotNumber", "CustomerDOT")?id=' + customerID + '&&ItemId=' + data + '" class="editDot">Edit</a> | <a href="@Url.Action("DeleteDotNumber", "CustomerDOT")?id=' + data + '" class="deleteDot">Delete</a>';
+
+                                                                    }
+                                                                }
+                                                            }],
+                            "lengthMenu": [[5, 10, 15, 20], [5, 10, 15, 20]],
+                        });
+                    },
+                    refresh: function () {
+                        DOtdt.ajax.reload();
+                    }
+                }
+                // initialize the datatables
+                dotListVM.init();
+            }
+
+            if (DOtdt.length != 0) {
+                $('#dots-data-table').css("display", "block");
+            }
+
+
+
+        }
+
+        //update the customer or company
+        $("#btnUpdateCustomer").click(function () {
+            var CustomerName = $("#CustomerName").val();
+            var accountOwnerName = $("#AccountOwnerName").val();
+            var accountOwnerEmail = $("#AccountOwnerEmail").val();
+            var companyLogo = $("#imgPreview").attr('src').length;
+            var accountNumber = $("#AccountNumber").val();
+            var city = $("#City").val();
+            var state = $("#State").val();
+            var zipCode = $("#ZipCode").val();
+            var addressLine1 = $("#AddressLine1").val();
+            var addressLine2 = $("#AddressLine1").val();
+            if (validateCustomer(CustomerName, accountOwnerName, accountOwnerEmail, companyLogo, zipCode, city, state) == false) {
+                return false;
+            }
+
+            var CustomerViewModel = {
+                CustomerName: CustomerName, AccountOwnerName: accountOwnerName, AccountOwnerEmail: accountOwnerEmail, CompanyID: $("#CompanyID").val(),
+                CompanyLogo: JSON.stringify(byteResult), City: city, State: state, ZipCode: zipCode, AddressLine1: addressLine1, AddressLine2: addressLine2,isActive: $("#cbCustomerStatus").is(':checked')
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Customer/UpdateCustomer",
+                data: JSON.stringify(CustomerViewModel),
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+                success: function (response) {
+                    if (response.Status != "Fail") {
+                        customerName = $("#CustomerName").val();
+                        $("#lblMessage").html("Customer profile updated successfully");
+                        $(".Customer-error-Message").html('');
+                    }
+                    else {
+                        //CustomerName = $("#CustomerName").val();
+                        $("#lblCErrorMessage").css("display", "block");
+                        $("#lblCErrorMessage").html(response.Result);
+                    }
+                    //$("#lblErrorMessage").html(response);
+                },
+                failure: function (response) {
+                    $("#lblErrorMessage").html(response);
+                    //alert(response.responseText);
+                },
+                error: function (response) {
+                    $("#lblErrorMessage").html("Inter");
+                    //alert(response.responseText);
+                }
+            });
+        });
+
+        //binding data in edit time
+        function CustomerSuccess(AccountNumber, CompanyId, CustomerName) {
+            acctNumber = AccountNumber;
+            $("#AccountNumber").val(AccountNumber);
+            $("#CompanyID").val(CompanyId);
+            customerName = CustomerName;
+            customerID = CompanyId;
+            $("#divAccount").css("display", "block");
+            $("#btnNewCustomer").css("display", "none");
+            $("#btnCancel").css("display", "none");
+            $("#btnUpdateCustomer").css("display", "block");
+            $("#divDOt").css("display", "block");
+            $("#divUser").css("display", "block");
+            $("#lblMessage").css("display", "block");
+
+            refreshDot();
+            refreshUsers();
+
+        }
+
+        //creating new customer or company
+        $("#btnNewCustomer").click(function () {
+            var customerName = $("#CustomerName").val();
+            var accountOwnerName = $("#AccountOwnerName").val();
+            var accountOwnerEmail = $("#AccountOwnerEmail").val();
+            var companyLogo = $("#imgPreview").attr('src').length;
+            var city = $("#City").val();
+            var state = $("#State").val();
+            var address1 = $("#AddressLine1").val();
+            var address2 = $("#AddressLine2").val();
+            var zipCode = $("#ZipCode").val();
+
+            if (validateCustomer(customerName, accountOwnerName, accountOwnerEmail, companyLogo, zipCode, city, state) == false) {
+                return false;
+            }
+
+
+            var CustomerViewModel = {
+                CustomerName: $("#CustomerName").val(), AccountOwnerName: $("#AccountOwnerName").val(), AccountOwnerEmail: $("#AccountOwnerEmail").val(),
+                CompanyLogo: JSON.stringify(byteResult),isActive: $("#cbCustomerStatus").is(':checked'),AddressLine1:address1,AddressLine2:address2,City:city,State:state,ZipCode:zipCode
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/Customer/CreateNewCustomer",
+                data: JSON.stringify(CustomerViewModel),
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+                success: function (response) {
+                    if (response != "Error" || response != "Fail") {
+                        CustomerSuccess(response.AccountNumber, response.CompanyID, response.CustomerName);
+                        $("#lblMessage").html("Customer profile created successfully");
+                    }
+                },
+                failure: function (response) {
+                },
+                error: function (response) {
+                }
+            });
+        });
+
+
+        $("#btnRegisterUser").on("click", function (e) {
+            var url = $(this).data("url");
+            $.get(url, function (data) {
+                $('#RegisterUserContainer').html(data);
+                $('#RegisterUserModal').modal('show');
+            });
+        });
+
+        $('#tableUser').on("click", ".editUser", function (event) {
+            event.preventDefault();
+            var urltest = $(this).attr("href");
+            var url = urltest.replace("undefined", $(this).closest('tr').children('td:eq(1)').text().replace(/[^A-Z0-9]+/ig, ""));
+            $.get(url, function (data) {
+                $('#RegisterUserContainer').html(data);
+                $('#RegisterUserModal').modal('show');
+            });
+        });
+
+
+        $('#tableUser').on("click", ".deleteUser", function (event) {
+            //if ($(this).closest('tr').children('td:eq(2)').text() != 'inactive') {
+            var result = confirm("Want to delete?");
+            if (result) {
+                event.preventDefault();
+                var url = $(this).attr("href");
+                $.get(url, function (data) {
+                    usersList.refresh();
+                });
+            }
+            //}
+            return false;
+        });
+
+
+
+
+        function refreshUsers() {
+            if ($.trim($("#CompanyID").val()).length != 0) {
+                usersList = {
+                    Userdt: null,
+                    init: function () {
+                        Userdt = $('#tableUser').DataTable({
+                            "ajax": {
+                                "url": "/Account/GetCustomerUsers?accountNo=" + acctNumber,
+                                "type": "GET",
+                                "datatype": "json"
+                            },
+                            "oLanguage": {
+                                "sEmptyTable": "No users found in this company"
+                            },
+                            "order": [[3,'desc'],[4,'desc']],
+                            "columns": [
+                                   { "title": "Email/UserName", "data": "Email", "searchable": true },
+                                                            {
+                                                                "title": "Role", "data": "RoleName", "searchable": false,
+                                                                "render": function (data) {
+                                                                    roleName=data;
+                                                                    return data.replace(/([A-Z])/g, ' $1').trim();
+                                                                }
+                                                            }
+                                                            ,
+                                                            {
+                                                                "title": "Is Active", "data": "IsActive", "searchable": false,
+                                                                "render": function (data) {
+                                                                    return data == true ? "Y" : "N";
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Created On", "data": "CreatedOn", "searchable": false,
+                                                                "render": function (data) {
+                                                                    return dateConverter(data) + " " + timeConverter(data);
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Modified On", "data": "ModifiedOn", "searchable": false,
+                                                                "render": function (data) {
+                                                                    if (data != null) {
+                                                                        return dateConverter(data) + " " + timeConverter(data);
+                                                                    }
+                                                                    return data;
+                                                                }
+                                                            },
+                                                            {
+                                                                "title": "Actions",
+                                                                "data": "Id",
+                                                                "searchable": false,
+                                                                "sortable": false,
+                                                                "render": function (data, type, full, meta) {
+                                                                    return '<a href="@Url.Action("EditUser", "Account")?UserId=' + data + '&RoleName=' + roleName + '" class="editUser">Edit</a> | <a href="@Url.Action("DeleteUser", "Account")?UserId=' + data + '" class="deleteUser customerread">Delete</a>';
+                                                                }
+                                                            }],
+                            "lengthMenu": [[5, 10, 15, 20], [5, 10, 15, 20]],
+                        });
+                    },
+                    refresh: function () {
+                        Userdt.ajax.reload();
+                    }
+                }
+                // initialize the datatables
+                usersList.init();
+            }
+
+            if (Userdt.length != 0) {
+                $('#tableUser').css("display", "block");
+
+            }
+        }
+
+    });
+</script>
+@Html.AntiForgeryToken()
+<div class="form-horizontal">
+    @if (ViewBag.UserRole == null)
+    {
+        <h3 style="padding-top:20px">Create Customer Profile</h3>
+    }
+    else
+    {
+        <h3 style="padding-top:20px">Update Customer Profile</h3>
+    }
+    <hr />
+    <label id="lblErrorMessage" style="color:red" class="Customer-error-Message"></label>
+    <input type="hidden" id="CompanyID" />
+    <div class="modal fade" id="createDotModal" tabindex="-1" role="dialog" aria-labelledby="CreateDotModal" aria-hidden="true" data-backdrop="static">
+        <div id="createDotContainer">
+        </div>
+    </div>
+
+    <div class="modal fade" id="RegisterUserModal" tabindex="-1" role="dialog" aria-labelledby="RegisterUserModal" aria-hidden="true" data-backdrop="static">
+        <div id="RegisterUserContainer">
+        </div>
+    </div>
+
+    <div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Company Name<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control customerread", required = "required", @maxlength = "70" } })
+                <label id="lblNameError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Customer Logo<span style="color: red">*</span>:</label>
+            <div class="col-md-10">
+                <input type="file" id="fileLogo" name="postedFile" accept="image/gif, image/jpeg, image/png, image/jpg" max-size=1024 class="btndisable" />
+                <label id="lblLogoError" style="color:red" class="Customer-error"></label>
+                <img id="imgPreview" src="#" alt="your image" width="100" height="100" style="display:none" />
+            </div>
+        </div>
+
+        <div id="divAccount" class="form-group" style="display:none">
+            <label class="control-label col-md-2">Account Number<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.AccountNumber, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Account Owner Name<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AccountOwnerName, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "50" } })
+                <label id="lblONameError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Account Owner Email<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AccountOwnerEmail, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "50" } })
+                <label id="lblOEmailError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, string.Format("{0}:", Html.DisplayNameFor(m => m.City)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", @maxlength = "50" } })
+                <label id="lblCityError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.State, string.Format("{0}:", Html.DisplayNameFor(m => m.State)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control", @maxlength = "50" } })
+                <label id="lblStateError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ZipCode, string.Format("{0}:", Html.DisplayNameFor(m => m.ZipCode)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ZipCode, new { htmlAttributes = new { @class = "form-control", @maxlength = "10" } })
+                <label id="lblZipError" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AddressLine1, string.Format("{0}:", Html.DisplayNameFor(m => m.AddressLine1)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.AddressLine1, new { @class = "form-control" })
+                <label id="lblAddress1Error" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AddressLine2, string.Format("{0}:", Html.DisplayNameFor(m => m.AddressLine2)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.AddressLine2, new { @class = "form-control" })
+                <label id="lblAddress2Error" style="color:red" class="Customer-error"></label>
+            </div>
+        </div>
+
+        <div id="divStatus" class="form-group" style="display:none">
+            @Html.LabelFor(model => model.isActive, string.Format("{0}:", Html.DisplayNameFor(m => m.isActive)), htmlAttributes: new { @class = "control-label col-md-2 customerread" })
+            <div class="col-md-10">
+                <input type="checkbox" name="IsActive" class="form-control btndisable" id="cbCustomerStatus">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="divCreate" class="col-md-offset-2 col-md-10">
+                <input type="button" id="btnNewCustomer" value="Create Customer" class="btn btn-default" />
+                <input type="button" id="btnUpdateCustomer" value="Update Customer" class="btn btn-default" style="display:none" />
+                @*<input type="button" id="btnCancel" value="Cancel" class="btn btn-default" />*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <label id="lblMessage" style="color:forestgreen;display:none"></label>
+                <label id="lblCErrorMessage" style="color:red;display:none"></label>
+            </div>
+        </div>
+
+    </div>
+    <div id="divDOt" class="form-group" style="display:none">
+        @*@Html.Label("lblDot", "Add DOT", new { @class = "control-label col-md-2" })*@
+        <div class="col-md-12">
+            <button type="button" id="btnAddDot" class="btn btn-default btn-md btndisable" data-toggle="modal" data-url="@Url.Action("CreateDot", "CustomerDOT")">
+                <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>Add DOT
+            </button>
+            <table id="dots-data-table" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>CustomerID</th>
+                        <th>DOTNumber</th>
+                        <th>DOTTag</th>
+                        <th>IsActive</th>
+                        <th>Actions</th>
+                        <th>ItemID</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div id="divUser" class="form-group" style="display:none">
+        @*@Html.Label("lblUser", "Add User", new { @class = "control-label col-md-2" })*@
+        <div class="col-md-12">
+            <button type="button" class="btn btn-default btn-md" data-toggle="modal" data-url="@Url.Action("RegisterUser","Account")" id="btnRegisterUser">
+                <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Add User
+            </button>
+            <table id="tableUser" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Email/UserName</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Created On</th>
+                        <th>Modified On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div>
+    @if (userData.Roles.Contains("SuperAdmin") || userData.Roles.Contains("PortalAdmin"))
+    {
+        @Html.ActionLink("Back to Dashboard", "GetCustomers", "Customer")
+    }
+    @if (userData.Roles.Contains("AccountAdmin"))
+    {
+        @Html.ActionLink("Back to Dashboard", "GetCustomer", "Customer")
+    }
+</div>

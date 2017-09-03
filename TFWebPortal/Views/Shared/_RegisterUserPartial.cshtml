@@ -1,0 +1,213 @@
+﻿@model TransForce.Web.Portal.Models.RegisterBindingModel
+@{
+    ViewBag.Title = null;
+}
+@{TransForce.Web.Portal.Models.UserModel userData = Session["UserData"] as TransForce.Web.Portal.Models.UserModel;}
+
+<script src="~/Scripts/customValidation.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postUrl;
+        $("#txtCName").val(customerName);
+        $("#txtANumber").val(acctNumber);
+        var actionValue=@Html.Raw(Json.Encode(Model.UserStaus));
+        if (actionValue == "CreateUser") {
+            postUrl = "/Account/SaveRegisterUser";
+            //$('#cbUserStatus').prop("checked", true);
+        }
+        else {
+            $('#divUserStatus').css("display", "block");
+            var Value =@Html.Raw(Json.Encode(Model.IsActive));
+            postUrl = "/Account/UpdateUser";
+            $('#cbUserStatus').prop("checked", Value);
+            var roles = @Html.Raw(Json.Encode(Model.RoleName));
+            if  (roles!= '') {
+                var str_array = roles.split(',');
+                for (var i = 0; i < str_array.length; i++) {
+                    // Trim the excess whitespace.
+                    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+                    $("input[value='" + str_array[i] + "']").prop('checked', true);
+                }
+            }
+
+            $(".edit-user").css("display", "none");
+        }
+        $('#btnSubmitRegisterUser').on('click', function (e) {
+            var userFirstName = $("#FirstName").val();
+            var userLastName = $("#LastName").val();
+            var userRole = $("#RoleName").val();
+            var userEmail = $("#Email").val();
+            var userPassword = $("#Password").val();
+            var userConfirmPassword = $("#ConfirmPassword").val();
+            var userTitle = $("#Title").val();
+
+            if ($("#RoleName").val() == undefined) {
+                userRole = [];
+                $('.cbRoles:checked').each(function () {
+                    userRole.push($(this).attr('value'));
+                });
+            }
+
+            if (ValidateUser(userFirstName, userLastName, userRole, userEmail, userPassword, userConfirmPassword, actionValue) == false) {
+                return false;
+            }
+
+
+
+            var registerModel = {
+                FirstName: userFirstName,
+                LastName: userLastName,
+                RoleName: userRole.toString(),
+                Email: userEmail,
+                Password: userPassword,
+                ConfirmPassword: userConfirmPassword,
+                AccountNumber: acctNumber,
+                IsActive: $("#cbUserStatus").is(':checked'),
+                Title: userTitle,
+                CompanyID:customerID
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: JSON.stringify(registerModel),
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+                success: function (response) {
+                    if (response != "Success") {
+                        $("#lblUserError").html(response);
+                        return false;
+                    }
+                    $('#RegisterUserModal').modal('hide');
+                    usersList.refresh();
+                },
+                failure: function (response) {
+                    //alert(response.responseText);
+                },
+                error: function (response) {
+                    //alert(response.responseText);
+                }
+            });
+            e.preventDefault();
+        });
+    })
+
+</script>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4>Add/Edit User</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <hr />
+                    <div class="form-group">
+                        <label id="lblCompanyName" class="col-md-4 control-label">Company Name:</label>
+                        <div class="col-md-6">
+                            <input type="text" id="txtCName" readonly="readonly" class="form-control" />
+                            @*@Html.TextBox("CompanyName", "Company Name", new { @class = "form-control", @readonly = "readonly" })*@
+                        </div>
+                    </div>
+
+                    <div id="divAccount" class="form-group">
+                        <label id="lblAccountNumber" class="col-md-4 control-label">Account Number:</label>
+                        <div class="col-md-6">
+                            <input type="text" id="txtANumber" readonly="readonly" class="form-control" />
+                            @*@Html.TextBox("AccountNumber", "Account Number", new { @class = "form-control", @readonly = "readonly" })*@
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Title, string.Format("{0}:", Html.DisplayNameFor(m => m.Title)), new { @class = "col-md-4 control-label" })
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @maxlength = "10" })
+                            <label id="lblTitleError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">First Name<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @maxlength = "50" })
+                            <label id="lblFnameError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Last Name<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @maxlength = "50" })
+                            <label id="lblLnameError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Role<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @if (userData.Roles.Contains(TransForce.Web.Portal.Models.Roles.AccountAdmin))
+                            {
+                                @Html.CheckBox("Account Admin", false, new { Value = "AccountAdmin", @class = "cbRoles" });
+                                @Html.Label("Account Admin")
+                                <br />
+                                @Html.CheckBox("Report Admin", false, new { Value = "ReportAdmin", @class = "cbRoles" });
+                                @Html.Label("Report Admin")
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(m => m.RoleName, ViewBag.RoleList as IEnumerable<SelectListItem>, "Select Role", new { @class = "form-control" })
+                            }
+                            <label id="lblRoleError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group edit-user">
+                        <label class="control-label col-md-4">Email<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @maxlength = "50" })
+                            <label id="lblEmailError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+                    <div class="form-group edit-user">
+                        <label class="control-label col-md-4">Password<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @maxlength = "50" })
+                            <label id="lblPassError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+                    <div class="form-group edit-user">
+                        <label class="control-label col-md-4">Confirm Password<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @maxlength = "50" })
+                            <label id="lblConPassError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="divUserStatus" style="display:none">
+                        @Html.LabelFor(model => model.IsActive, string.Format("{0}:", Html.DisplayNameFor(m => m.IsActive)), htmlAttributes: new { @class = "col-md-4 control-label" })
+                        <div class="col-md-6">
+                            <input type="checkbox" name="IsActive" class="form-control" id="cbUserStatus">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label id="lblUserError" style="color:red" class="User-error"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <label id="lblUserError" style="color:red" class="User-error"></label>
+                        <input type="submit" class="btn btn-primary" id="btnSubmitRegisterUser" value="Save" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

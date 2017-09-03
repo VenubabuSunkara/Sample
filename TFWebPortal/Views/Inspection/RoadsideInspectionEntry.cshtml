@@ -1,0 +1,705 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{
+    ViewBag.Title = "RoadsideInspectionEntry";
+}
+
+<h2>Roadside Inspection Entry</h2>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @*@Styles.Render("~/Content/datatables")*@
+}
+<link href="~/Content/DatePicker/datepicker.css" rel="stylesheet" />
+<link href="~/Content/DatePicker/jquery-ui.css" rel="stylesheet" />
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.css">
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/commonfunctions.js"></script>
+<script type="text/javascript">
+    var companyID = 0;
+    var ddlcompanyID = "";
+    var inspectionListVM;
+    var inspectionDriverListVM;
+    var DriverDOTNumber;
+    var InspectionID = "";
+    var INSP_ID = "";
+    var DriverLicenseState;
+    var DriverLicenseNumber;
+    var DriverDOB;
+    var DriverId;
+    var manualInspectionId = "";
+
+    var start = new Date();
+    start.setFullYear(start.getFullYear()-90);
+    var end = new Date();
+    end.setFullYear(end.getFullYear());
+
+    $(document).ready(function () {
+        $(".fileUploadControls").attr('disabled',true);
+
+        $('.datepicker').datepicker({
+            //dateFormat: 'dd-mm-yy',
+            dateFormat: 'mm/dd/yy',
+            changeMonth: true,
+            changeYear: true,
+            inline: true,
+            //maxDate:  new Date(),
+            minDate: start,
+            maxDate: end,
+            yearRange: start.getFullYear() + ':' + end.getFullYear()
+        });
+
+        $('#CompanyList').prop('selectedIndex', 0);
+
+        companyID = @Html.Raw(Json.Encode(Model.CompanyID));
+
+        if (companyID != 0) {
+            $("#CompanyID").val(companyID);
+            $("#divCompanyList").attr('disabled', true);
+        }
+        var htmlLocations="";
+        $("#CompanyList").change(function() {
+            ddlcompanyID = $("#CompanyList").val();
+            companyID = ddlcompanyID;
+            //$('#ddlLocation').val();
+            htmlLocations="";
+            if($("#CompanyList").val()!=""){
+                $.post("/Inspection/GetLocations", { CompanyID: companyID }, function (locationList) {
+                    if(locationList.length>0){
+                        $('#ddlLocation').html(htmlLocations);
+                        htmlLocations+='<option selected="selected" value="">-- Select Location --</option>';
+                        for(i=0;i<locationList.length;i++){
+                            htmlLocations+="<option value="+locationList[i].LocationCode+">"+locationList[i].LocationName+"</option>";
+                        }
+                        $('#ddlLocation').append(htmlLocations);
+                    }else{
+                        $('#ddlLocation').html('');
+                        htmlLocations+='<option selected="selected" value="">-- Select Location --</option>';
+                        $('#ddlLocation').append(htmlLocations);
+                    }
+                });
+            }
+
+            clearFields();
+        });
+
+        $("#FindByDate").click(function () {
+            //ddlcompanyID = $("#CompanyList").val();
+            var inspectionDate = $("#inspectionDate").val();
+
+            if(ddlcompanyID == "" && companyID==0) {
+                $('.inspection-error').html('');
+                $("#lblCompanyError").html('Please select the company');
+                return false;
+            }
+
+            if (companyID == 0) {
+                companyID = ddlcompanyID;
+            }
+
+            var inspectionData={
+                CompanyID:companyID,
+                InspectionDate:inspectionDate
+            }
+
+            if (validateInspection(companyID, inspectionDate)) {
+                inspectionListVM = {
+                    inspectiondt: null,
+                    init: function (event) {
+                        inspectiondt = $('#InspcetionModalTable').DataTable({
+                            "ajax": {
+                                "url": "/Inspection/RoadsideInspectionEntry",
+                                "type": "POST",
+                                "datatype": "json",
+                                "data":inspectionData
+                                //"dataSrc": function (json) {
+                                //    console.log(json);
+                                //}
+                            },
+                            "oLanguage": {
+                                "sEmptyTable": "No Inspcetion List found."
+                            },
+                            "columns": [
+                                { "title": "Inspection Id", "data": "INSPECTION_ID", "searchable": true,
+                                    "render": function (data) {
+                                        return inspecId=data;
+                                    }
+                                },
+                                   { "title": "Driver Last Name", "data": "DRIVER_LAST_NAME1", "searchable": true,
+                                       "render": function (data) {
+                                           return "<a href='#' onclick='bindInspectionList("+inspecId+")'>"+data+"</a>";
+                                           //return "<a href='#' onclick='bindInspectionList("+data+")'>"+data+"</a>";
+                                       }
+                                   },
+                                   { "title": "Inspection Date", "data": "INSP_DATE", "searchable": true ,
+                                       "render": function (data) {
+                                           return INSP_DATE(data);
+                                       }
+                                   },
+                                     {
+                                         "title": "Inspection State", "data": "REPORT_STATE", "searchable": true,
+                                     },
+                                      {
+                                          "title": "Report Number", "data": "REPORT_NUMBER1", "searchable": true,
+                                      }],
+                            "lengthMenu": [[5, 10, 15, 20, 25], [5, 10, 15, 20, 25]],
+                            "bDestroy": true,
+                            "columnDefs": [
+                                {
+                                    "targets": [ 0 ],
+                                    "visible": false,
+                                    "searchable": false
+                                }
+                            ]
+                        });
+                    },
+                    refresh: function () {
+                        inspectiondt.ajax.reload();
+                    }
+                }
+                // initialize the datatables
+                inspectionListVM.init();
+
+                $('#InspcetionModal').modal('show');
+            }
+        });
+
+        $("#FindByName").click(function () {
+            var driverName = $("#driverName").val();
+            var inspectionDriverDate = $("#inspectionDate").val()
+
+            if(ddlcompanyID == "" && companyID==0) {
+                $('.inspectionDriver-error').html('');
+                $("#lblCompanyError").html('Please select the company');
+                return false;
+            }
+
+            if (companyID == 0) {
+                companyID = ddlcompanyID;
+            }
+
+            //var driverObj={
+            //    CompanyID:companyID,
+            //    DriverName:driverName,
+            //    InspectionDate:inspectionDriverDate
+            //}
+
+            if (validateInspectionDriver(companyID, driverName)) {
+                inspectionDriverListVM = {
+                    inspectionDriverdt: null,
+                    init: function (event) {
+                        inspectionDriverdt = $('#InspcetionDriversModalTable').DataTable({
+                            "ajax": {
+                                "url": "/Inspection/RoadsideDriversInspectionEntry?CompanyID="+companyID+"&DriverName="+driverName.split(",")[0],
+                                "type": "GET",
+                                "datatype": "json",
+                                //"data": driverObj
+                            },
+                            "oLanguage": {
+                                "sEmptyTable": "No Driver List found."
+                            },
+                            "columns": [
+                                { "title": "Driver Id", "data": "DriverID", "searchable": true,
+                                    "render": function (data) {
+                                        return driverId=data;
+                                    }
+                                },
+                                   { "title": "Last Name", "data": "LastName", "searchable": true,
+                                       "render": function (data) {
+                                           return "<a href='#' onclick='bindDriverInspectionList("+driverId+")'>"+data+"</a>";
+                                       }
+                                   },
+                                   {
+                                       "title": "First Name", "data": "FirstName", "searchable": true
+                                   },
+                                   { "title": "Date of Birth", "data": "DOB", "searchable": true ,
+                                       "render": function (data) {
+                                           return INSP_DATE(data);
+                                       }
+                                   },
+                                     {
+                                         "title": "Driver License State", "data": "LicenseState", "searchable": true,
+                                     },
+                                      {
+                                          "title": "Driver License Number", "data": "LicenseNumber", "searchable": true,
+                                      }],
+                            "lengthMenu": [[5, 10, 15, 20, 25], [5, 10, 15, 20, 25]],
+                            "bDestroy": true,
+                            "columnDefs": [
+                                {
+                                    "targets": [ 0 ],
+                                    "visible": false,
+                                    "searchable": false
+                                }
+                            ]
+                        });
+                    },
+                    refresh: function () {
+                        inspectionDriverdt.ajax.reload();
+                    }
+                }
+                // initialize the datatables
+                inspectionDriverListVM.init();
+
+                $('#InspcetionDriversModal').modal('show');
+            }
+        });
+
+        $("#saveInspection").click(function (){
+
+            $('.inspection-error').html('');
+            $('.inspectionDriver-error').html('');
+            $('.inspectionDateDriver-error').html('');
+            $('.inspectionDOB-error').html('');
+            $('.inspectionPost-error').html('');
+
+            if ($.trim($("#CompanyList").val())=="" && companyID==0) {
+                $("#lblCompanyError").html('Please select the Company');
+                return false;
+            }
+            else if ($.trim($("#inspectionDate").val())=="") {
+                $("#lblFindByDate").html('Please select Inspection Date');
+                return false;
+            }
+            else if ($.trim($("#driverName").val())=="" ) {
+                $("#lblFindByDriverName").html('Please Enter Driver Name');
+                return false;
+            }else if ($.trim($('#dateOfBirth').val())=="" ) {
+                $("#lblDOBError").html('Please Enter Date of Birth');
+                return false;
+            }
+            else{
+                if(InspectionID!=""){
+                    var inspectionModel = {
+                        //CompanyID:companyID,
+                        InspectionID:InspectionID,
+                        INSP_ID:INSP_ID,
+                        //DriverDOB:DriverDOB,
+                        DriverDOB:$('#dateOfBirth').val(),
+                        DOTNumber:DriverDOTNumber,
+                        DriverLicenseNumber:DriverLicenseNumber,
+                        DriverLicenseState:DriverLicenseState,
+                        InspectionReceived:$('input[name=violation]:checked').val(),
+                        DriverLog:$('input[name=log]:checked').val(),
+                        DisciplineActionIssued:$('input[name=action]:checked').val(),
+                        RepairWorkOrder:$('input[name=repairRecord]:checked').val(),
+                        OtherViolation:$('input[name=report]:checked').val(),
+                        ReportNumber: $("#reportNumber").val(),
+                        InspectionDate:  $("#inspectionDate").val(),
+                        //CompanyID: $('#CompanyList').val(),
+                        CompanyID : companyID,
+                        //InspectionState: $('#inspectionState').val(),
+                        InspectionState:$('#inspectionState option:selected').text(),
+                        DriverLastName: $('#driverName').val().split(",")[0],
+                        DriverFirstName:  $('#driverName').val().split(",")[1],
+                        Comments:$('#docComments').val(),
+                        AdminNotes:$('#adminNotes').val(),
+                        LocationCode:$('#ddlLocation option:selected').text()
+                        //LocationCode:$('#ddlLocation').val()
+                    };
+                    $.post("/Inspection/AddManualInspection", {inspectionModel:inspectionModel  }, function (manualData) {
+                        if(manualData.status=="Success"){
+                            manualInspectionId = manualData.inspectionData.ItemId;
+
+                            $("#lblInspectionPostSuccess").html('Inspection Entry Saved Successfully');
+                            $(".fileUploadControls").attr('disabled',false);
+                        }
+                    });
+                }else{
+                    $("#lblInspectionPostError").html('Please select inspection');
+                    return false;
+                }
+            }
+        });
+
+        $("#postedFiles").change(function () {
+            $("#lblDOCError").html('');
+            var _validFileExtensions = [".doc", ".docx", ".pdf"];
+            var fileUpload = $("#postedFiles").get(0);
+            if (fileUpload.value == "") {
+                $("#lblDOCError").html("Please select the file");
+                return false;
+            }
+            for (var i = 0; i < fileUpload.files.length; i++) {
+                $('#lblDOCError').css("display", "block");
+                if (!Validate(fileUpload, _validFileExtensions)) {
+                    $("#lblDOCError").html("Please select .doc or .docx or .pdf files");
+                    return false;
+                }
+                else if ((fileUpload.files[i].size > 5048576)) {
+                    $("#lblDOCError").html("Documnet must be less than 5 MB");
+                    return false;
+                }
+            }
+            $('#lblDOCError').css("display", "none");
+        });
+
+        $("#resetInspection").click(function (){
+            if (ddlcompanyID!="") {
+                companyID="";
+            }
+            $('#CompanyList').val("");
+            clearFields();
+        });
+
+        $("#resetBindInspection1").click(function (){
+            clearFields();
+        });
+    });
+
+    function clearFields(){
+        $('.inspection-error').html('');
+        $('.inspectionDriver-error').html('');
+        $('.inspectionDateDriver-error').html('');
+        $('.inspectionDOB-error').html('');
+        $('.inspectionPost-error').html('');
+
+        $("#postedFiles").val('');
+        $(".fileUploadControls").attr('disabled',true);
+        $("#reportNumber").val("");
+        $("#inspectionDate").val("");
+        //$('#CompanyList').val("");
+        $('#inspectionState').val("");
+        $('#inspectionState option:selected').text("-- Select State --");
+        $('#dateOfBirth').val("");
+        $('#driverName').val("");
+        $('#ddlLocation').val("");
+        $('#ddlLocation option:selected').text("-- Select Location --");
+        $('#docComments').val("");
+        $('#adminNotes').val("");
+
+        $('input[name=violation][value="false"]').prop("checked", true);
+        $('input[name=log][value="false"]').prop("checked", true);
+        $('input[name=action][value="false"]').prop("checked", true);
+        $('input[name=repairRecord][value="false"]').prop("checked", true);
+        $('input[name=report][value="false"]').prop("checked", true);
+
+        DriverDOTNumber="";
+        DriverLicenseState="";
+        DriverLicenseNumber="";
+        InspectionID="";
+        INSP_ID="";
+    }
+
+    function INSP_DATE(datevalue) {
+        // var inspDate;
+        if(datevalue!=null){
+            inspDate= new Date(parseInt(datevalue.replace("/Date(", "").replace(")/", ""), 10));
+            return inspDate.toLocaleDateString('en-US');
+        }else{
+            return "";
+        }
+    }
+
+    function validateInspection(companyID, inspectionDate) {
+        var message = "";
+        $('.inspection-error').html('');
+        if ($.trim(companyID) == "") {
+            message = message + "Please select the Company <br />";
+            $("#lblCompanyError").html('Please select the Company');
+        }
+        if ($.trim(inspectionDate) == "") {
+            message = message + "Please select Date <br />";
+            $("#lblFindByDate").html('Please select Inspection Date');
+        }
+        if (message != "") {
+            return false;
+        }
+        else {
+            $('.inspection-error').html('');
+            return true;
+        }
+    }
+
+    function validateInspectionDriver(companyID, driverName) {
+        var message = "";
+        $('.inspectionDriver-error').html('');
+        if ($.trim(companyID) == "") {
+            message = message + "Please select the Company <br />";
+            $("#lblCompanyError").html('Please select the Company');
+        }
+        //if($.trim(inspectionDriverDate) == "") {
+        //    $('.inspectionDateDriver-error').html('');
+        //    $("#lblFindByDate").html('Please select Date.');
+        //    return false;
+        //}
+        if ($.trim(driverName) == "") {
+            message = message + "Please Enter Driver Name <br />";
+            $("#lblFindByDriverName").html('Please Enter Driver Name');
+        }
+        if (message != "") {
+            return false;
+        }
+        else {
+            $('.inspectionDriver-error').html('');
+            return true;
+        }
+    }
+
+    function bindInspectionList(inspection_Id){
+        //companyID=companyID;
+        var inspModel={
+            CompanyID:companyID,
+            InspectionId:inspection_Id
+        }
+        $.post("/Inspection/GetCompanyInspection", { model: inspModel}, function (inspectionObj) {
+            if(inspectionObj!=null){
+                InspectionID=inspectionObj.InspectionID;
+                INSP_ID=inspectionObj.INSP_ID;
+                $("#reportNumber").val(inspectionObj.ReportNumber);
+                $('#inspectionState option:selected').text(inspectionObj.InspectionState);
+                $('#dateOfBirth').val(INSP_DATE(inspectionObj.DriverDOB));
+                $('#driverName').val(inspectionObj.DriverLastName +", "+ inspectionObj.DriverFirstName);
+                $('#ddlLocation option:selected').text(inspectionObj.LocationCode);
+
+                DriverDOTNumber=inspectionObj.DOTNumber;
+                DriverLicenseState=inspectionObj.DriverLicenseState;
+                DriverLicenseNumber=inspectionObj.DriverLicenseNumber;
+
+                if( inspectionObj.InspectionReceived!=null ||  inspectionObj.InspectionReceived!=""){
+                    $('input[name=violation][value='+inspectionObj.InspectionReceived+']').prop("checked", true);
+                }
+                if( inspectionObj.DriverLog!=null ||  inspectionObj.DriverLog!=""){
+                    $('input[name=log][value='+inspectionObj.DriverLog+']').prop("checked", true);
+                }
+                if( inspectionObj.DisciplineActionIssued!=null ||  inspectionObj.DisciplineActionIssued!=""){
+                    $('input[name=action][value='+inspectionObj.DisciplineActionIssued+']').prop("checked", true);
+                }
+                if( inspectionObj.RepairWorkOrder!=null ||  inspectionObj.RepairWorkOrder!=""){
+                    $('input[name=repairRecord][value='+inspectionObj.RepairWorkOrder+']').prop("checked", true);
+                }
+                if( inspectionObj.OtherViolation!=null ||  inspectionObj.OtherViolation!=""){
+                    $('input[name=report][value='+inspectionObj.OtherViolation+']').prop("checked", true);
+                }
+                $('#docComments').val(inspectionObj.Comments);
+                $('#adminNotes').val(inspectionObj.AdminNotes);
+
+                $('#InspcetionModal').modal('hide');
+            }
+            else{
+                //clearFields();
+            }
+        });
+    }
+
+    function bindDriverInspectionList(Id){
+        companyID=companyID;
+        $.post("/Inspection/GetDriverInspection", { CompanyID: companyID, DriverId: Id }, function (driverObj) {
+            if(driverObj!=null){
+                DriverDOTNumber=driverObj.DOTNumber;
+                DriverLicenseState=driverObj.LicenseState.slice(0,2);
+                DriverLicenseNumber=driverObj.LicenseNumber;
+                //DriverDOB= driverObj.DOB;
+                //driverObj.CompanyId;
+                //DriverId=driverObj.DriverID;
+                $('#driverName').val(driverObj.LastName +", "+ driverObj.FirstName );
+                $('#dateOfBirth').val(INSP_DATE(driverObj.DOB));
+
+                $('#InspcetionDriversModal').modal('hide');
+            }
+        });
+    }
+
+</script>
+@Html.HiddenFor(m => m.CompanyID)
+@if (Model.CompanyID == 0)
+{
+    <div class="form-group" id="divCompanyList">
+        <label class="col-md-2 control-label">Select Company<span style='color:red'>*</span>:</label>
+        @*@Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-2 control-label" })*@
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Please select", new { @class = "form-control" })
+            <label id="lblCompanyError" style="color:red" class="inspection-error inspectionDriver-error"></label>
+        </div>
+    </div>
+}
+
+<div class="form-horizontal" id="roadsideInspectionForm">
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Inspection Date</label>
+        <div class="controls">
+            <input type="text" id="inspectionDate" class="form-control datepicker">&nbsp;
+            <label id="lblFindByDate" style="color:red" class="inspection-error inspectionDateDriver-error"></label>
+            <input type="button" class="btn btn-default" id="FindByDate" value="Find">
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Report Number</label>
+        <div class="controls">
+            <input type="text" id="reportNumber" class="form-control">&nbsp;&nbsp;&nbsp;
+            <label class="control-label">Inspection State</label>&nbsp;
+            <select class="form-control" id="inspectionState">
+                <option value="">-- Select State --</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Driver Name</label>
+        <div class="controls">
+            <input type="text" id="driverName" class="form-control">&nbsp;
+            <label id="lblFindByDriverName" style="color:red" class="inspectionDriver-error"></label>
+            <input type="button" class="btn btn-default" value="Find" id="FindByName">&nbsp;&nbsp;&nbsp;
+            <label class="control-label">Date of birth</label>&nbsp;
+            <input type="text" id="dateOfBirth" class="form-control datepicker">
+            <label id="lblDOBError" style="color:red" class="inspectionDOB-error"></label>
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Location</label>
+        <div class="controls">
+            @*@Html.DropDownListFor(m => m.Locations, Model.Locations, "Please select", new { @class = "form-control" })*@
+            <select class="form-control" id="ddlLocation">
+                <option value="">-- Select Location --</option>
+            </select>
+            &nbsp;&nbsp;&nbsp;
+            <label class="control-label">Region</label>&nbsp;
+            <select class="form-control" id="ddlRegion">
+                <option value="">-- Select Region --</option>
+            </select>&nbsp;&nbsp;&nbsp;
+            <label class="control-label">Area</label>&nbsp;
+            <select class="form-control" id="ddlArea">
+                <option value="">-- Select Area --</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-3">Were violations reported?</label>
+        <div class="controls">
+            <input type="radio" name="violation" id="" class="" value=true>Yes&nbsp;
+            <input type="radio" name="violation" id="" class="" value=false checked="checked">No&nbsp;
+            <input type="radio" name="violation" id="" class="" value=null> N/A
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-4">Did you provide corrective action document?</label>
+        <div class="controls">
+            <input type="radio" name="action" id="" class="" value=true>Yes&nbsp;
+            <input type="radio" name="action" id="" class="" value=false checked="checked">No&nbsp;
+            <input type="radio" name="action" id="" class="" value=null>N/A
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-4">Did you provide the Drivers Daily log?</label>
+        <div class="controls">
+            <input type="radio" name="log" id="" class="" value=true>Yes&nbsp;
+            <input type="radio" name="log" id="" class="" value=false checked="checked">No&nbsp;
+            <input type="radio" name="log" id="" class="" value=null>N/A
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-4">Did you provide the vehicle repair record?</label>
+        <div class="controls">
+            <input type="radio" name="repairRecord" id="" class="" value=true>Yes&nbsp;
+            <input type="radio" name="repairRecord" id="" class="" value=false checked="checked">No&nbsp;
+            <input type="radio" name="repairRecord" id="" class="" value=null>N/A
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-5">Did you follow state guidelines for sending this report?</label>
+        <div class="controls">
+            <input type="radio" name="report" id="" class="" value=true>Yes&nbsp;
+            <input type="radio" name="report" id="" class="" value=false checked="checked">No&nbsp;
+            <input type="radio" name="report" id="" class="" value=null>N/A
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Document Comments</label>
+        <div class="controls">
+            <textarea rows="3" cols="50" class="form-control" id="docComments" placeholder="Disciplinary action needed for driver speeding violaton"></textarea>
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2">Admin Notes</label>
+        <div class="controls">
+            <textarea rows="3" cols="50" class="form-control" id="adminNotes" placeholder="Driver has moved locations"></textarea>
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2"></label>
+        <div class="controls">
+            @*<input type="file" id="pdfFile" name="file" />
+                <label id="lblFileError" style="color:red" class=""></label>*@
+
+            @{
+                Html.RenderPartial("_UploadInspectionDocumnets");
+            }
+        </div>
+    </div>
+    <div class="form-group control-group form-inline">
+        <label class="control-label col-md-2"></label>
+        <div class="controls">
+            <input type="button" class="btn btn-default" id="saveInspection" value="Save">
+            <input type="button" class="btn btn-default" id="resetInspection" value="Reset">
+            @*<input type="button" class="btn btn-default" value="Cancel">*@
+            @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-default" })
+
+            <label id="lblInspectionPostError" style="color:red" class="inspectionPost-error"></label>
+            <label id="lblInspectionPostSuccess" style="color:green" class="inspectionPost-error"></label>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="InspcetionModal" tabindex="-1" role="dialog" aria-labelledby="InspcetionModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" style="width:70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4>Roadside Inspections Entered Lists</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered" id="InspcetionModalTable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Inspection Id</th>
+                            <th>Driver Last Name</th>
+                            <th>Inspection Date</th>
+                            <th>Inspection State</th>
+                            <th>Report Number</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group" style="text-align:left;">
+                    <div class="">
+                        <a href="#" id="resetBindInspection1" data-dismiss="modal">None of the above</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="InspcetionDriversModal" tabindex="-1" role="dialog" aria-labelledby="InspcetionDriversModal" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" style="width:70%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4>Driver List</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered" id="InspcetionDriversModalTable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Driver Id</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Date of Birth</th>
+                            <th>Driver License State</th>
+                            <th>Driver License Number</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group" style="text-align:left;">
+                    <div class="">
+                        @*<a href="#" id="resetBindInspection2" data-dismiss="modal">None of the above</a>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

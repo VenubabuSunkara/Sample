@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "GetCustomers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @*@Styles.Render("~/Content/datatables")*@
+}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.css">
+<script src="~/Scripts/commonfunctions.js"></script>
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript">
+    var customerListVM;
+    $(document).ready(function () {
+        refreshCustomers();
+        $('#tableCustomers').on("click", ".deleteCustomer", function (event) {
+            event.preventDefault();
+            var result = confirm("Want to delete?");
+            if (result) {
+                
+                var url = $(this).attr("href");
+                $.get(url, function (data) {
+                    customerListVM.refresh();
+                });
+            }
+        });
+
+        function refreshCustomers() {
+            customerListVM = {
+                Customerdt: null,
+                init: function (event) {
+                    Customerdt = $('#tableCustomers').DataTable({
+                        "ajax": {
+                            "url": "/Customer/GetAllCustomer",
+                            "type": "GET",
+                            "datatype": "json",
+                            "dataSrc": function (json) {
+                                //Make your callback here.
+                                debugger;
+                                if (json.data.CompanyID == 0) {
+                                    $("#lblErrorMessage").html(json.data.ExMessage);
+                                }
+                                return json.data;
+                            }
+                        },
+                        "oLanguage": {
+                            "sEmptyTable": "No data found"
+                        },
+                        "order": [6, 'desc'],
+                        "columns": [
+                               { "title": "Account Number", "data": "AccountNumber", "searchable": true },
+                                                        { "title": "Company Name", "data": "CustomerName", "searchable": true },
+                                                        {
+                                                            "title": "Account Owner Name", "data": "AccountOwnerName", "searchable": true
+                                                        },
+                                                        {
+                                                            "title": "Account Owner Email", "data": "AccountOwnerEmail", "searchable": true
+                                                        },
+                                                            {
+                                                                "title": "Is Active", "data": "isActive", "searchable": true,
+                                                                "render": function (data) {
+                                                                    return data == true ? "Y" : "N";
+                                                                }
+                                                            },
+
+                                                        {
+                                                            "title": "DOT Count", "data": "DotCount", "searchable": false
+                                                        },
+                                                        {
+                                                            "title": "Modified On", "data": "ModifiedOn", "searchable": false,
+                                                            "render": function (data) {
+                                                                if (data != null) {
+                                                                    return dateConverter(data) + " " + timeConverter(data);
+                                                                }
+                                                                return data;
+                                                            }
+                                                        },
+                                                        {
+                                                            "title": "Actions",
+                                                            "data": "CompanyID",
+                                                            "searchable": false,
+                                                            "sortable": false,
+                                                            "render": function (data, type, full, meta) {
+                                                                return '<a href="@Url.Action("EditCustomer", "Customer")?CompanyId=' + data + '" class="editCustomer btndisable">Edit</a> | <a href="@Url.Action("DeleteCustomer", "Customer")?CompanyID=' + data + '" class="deleteCustomer btndisable">Delete</a>';
+                                                            }
+                                                        }],
+                        "lengthMenu": [[5, 10, 15, 20], [5, 10, 15, 20]],
+                    });
+                },
+                refresh: function () {
+                    Customerdt.ajax.reload();
+                }
+            }
+            // initialize the datatables
+            customerListVM.init();
+        }
+    });
+
+</script>
+
+<h3 style="padding-top:20px">Customer Profile Listing</h3>
+<div class="form-horizontal">
+    <hr />
+    <label id="lblErrorMessage" style="color:red" class="Customer-error-Message"></label>
+    <div id="divSPCompany" class="form-group">
+        <div class="col-md-12">
+            @Html.ActionLink("Add", "CreateCustomer", "Customer", new { @class = "btn btn-default btn-md" })
+            <table id="tableCustomers" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Account Number</th>
+                        <th>Company Name</th>
+                        <th>Account Owner Name</th>
+                        <th>Account Owner Email</th>
+                        <th>Is Active</th>
+                        <th>#DOT Numbers</th>
+                        <th>Modified On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>

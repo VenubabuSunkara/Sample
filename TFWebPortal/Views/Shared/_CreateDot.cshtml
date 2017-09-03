@@ -1,0 +1,120 @@
+﻿@model TransForce.Web.Portal.Models.CustomerDOTNumber
+<script type="text/javascript">
+    $(document).ready(function () {
+        //debugger;
+        $("#CustomerID").val(customerID);
+        var actionValue = '@(ViewBag.Action)';
+        var postUrl;
+        $("#AccountNumber").val(acctNumber);
+        $("#CompanyName").val(customerName);
+        if (@Html.Raw(Json.Encode(Model.DOTStaus)) == "Create") {
+            //$("#DOTNumber").val(dotNumber);
+            postUrl = "/CustomerDOT/AddCustomerDOTNumber";
+            //$('#IsActive').prop("checked", true);
+        }
+        else {
+            $('#divDOtStatus').css("display", "block");
+            postUrl = "/CustomerDOT/UpdateDotNumber";
+            $("#DOTNumber").val(dotNumber);
+            $("#DOTTag").val(dOtTag);
+            $('#IsActive').prop("checked", dotStatus);
+        }
+
+
+
+        $('#btnAddDot').on('click', function (e) {
+            if ($.trim($("#DOTNumber").val()).length != 0) {
+                var CustomerDotModel = {
+                    CustomerID: $("#CompanyID").val(), DOTNumber: $("#DOTNumber").val(), DOTTag: $.trim($("#DOTTag").val()), IsActive: $("#IsActive").is(':checked'), ItemID: $("#ItemID").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: postUrl,
+                    data: JSON.stringify(CustomerDotModel),
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: "json",
+                    success: function (response) {
+                        if (response != "Success") {
+                            $("#lblDotError").html(response);
+                            return false;
+                        }
+                        $('#createDotModal').modal('hide');
+                        //$("#lblMessage").html("");
+                        dotListVM.refresh();
+                    },
+                    failure: function (response) {
+                        //alert(response.responseText);
+                    },
+                    error: function (response) {
+                        //alert(response.responseText);
+                    }
+                });
+            }
+            else {
+                $("#lblDotNumberError").html("Please enter a DOT number");
+                return false;
+            }
+            e.preventDefault();
+        });
+    })
+
+</script>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Add/Edit US DOT Number</h4>
+        </div>
+        @Html.HiddenFor(model => model.CustomerID)
+        @Html.HiddenFor(model => model.ItemID)
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label id="lblCompanyName" class="control-label col-md-4">Company Name:</label>
+                        <div class="col-md-6">
+                            @Html.TextBox("CompanyName", "Company Name", new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div id="divAccount" class="form-group">
+                        <label id="lblAccountNumber" class="control-label col-md-4">Account Number:</label>
+                        <div class="col-md-6">
+                            @Html.TextBox("AccountNumber", "Account Number", new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">US DOT Number<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.DOTNumber, new { htmlAttributes = new { @maxlength = "120", @class = "form-control" } })
+                            <label id="lblDotNumberError" style="color:red" class="Customer-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DOTTag, string.Format("{0}:", Html.DisplayNameFor(m => m.DOTTag)), htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.DOTTag, new { htmlAttributes = new { @maxlength = "500", @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="form-group" id="divDOtStatus" style="display:none">
+                        @Html.LabelFor(model => model.IsActive, string.Format("{0}:", Html.DisplayNameFor(m => m.IsActive)), htmlAttributes: new { @class = "control-label col-md-4" })
+                        <div class="col-md-6">
+                            <input type="checkbox" name="IsActive" class="form-control" id="IsActive">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <label id="lblDotError" style="color:red" class="Customer-error"></label>
+                    <input type="submit" id="btnAddDot" class="btn btn-primary" value="Submit" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

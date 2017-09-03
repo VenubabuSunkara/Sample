@@ -1,0 +1,339 @@
+﻿
+@{
+    ViewBag.Title = "EditCustomer";
+}
+
+<h2>EditCustomer</h2>
+
+@model TransForce.Web.Portal.Models.CustomerViewModel
+
+<script src="~/Scripts/customerValidation.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var byteResult;
+        
+        //function readURL(input) {
+        //    if (input.files && input.files[0]) {
+        //        var reader = new FileReader();
+        //        reader.onload = function (e) {
+        //            $('#imgPreview').css("display", "block");
+        //            $('#imgPreview').attr('src', e.target.result);
+        //            byteResult = e.target.result;
+        //        }
+        //        reader.readAsDataURL(input.files[0]);
+        //    }
+        //}
+        //$("#fileLogo").change(function () {
+        //    readURL(this);
+        //});
+
+
+
+        //$("#btnNewCustomer").click(function () {
+        //    debugger;
+        //    $("#errorMessage").empty();
+        //    var customerName = $("#CustomerName").val();
+        //    var accountOwnerName = $("#AccountOwnerName").val();
+        //    var accountOwnerEmail = $("#AccountOwnerEmail").val();
+        //    var companyLogo = $("#fileLogo").val();
+
+        //    if (validateCustomer(customerName, accountOwnerName, accountOwnerEmail, companyLogo) == false) {
+        //        return false;
+        //    }
+
+
+        //    var CustomerViewModel = {
+        //        CustomerName: $("#CustomerName").val(), AccountOwnerName: $("#AccountOwnerName").val(), AccountOwnerEmail: $("#AccountOwnerEmail").val(),
+        //        CompanyLogo: JSON.stringify(byteResult)
+        //    };
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Customer/CreateNewCustomer",
+        //        //data: '{CustomerViewModel:' + JSON.stringify(CustomerViewModel) + '}',
+        //        data: JSON.stringify(CustomerViewModel),
+        //        contentType: 'application/json;charset=utf-8',
+        //        dataType: "json",
+        //        success: function (response) {
+        //            debugger;
+        //            if (response != "Error") {
+        //                $("#AccountNumber").val(response.AccountNumber);
+        //                $("#CompanyID").val(response.CompanyID);
+        //                $("#divAccount").css("display", "block");
+        //                $("#btnNewCustomer").css("display", "none");
+        //                $("#btnCancel").css("display", "none");
+        //                $("#btnUpdateCustomer").css("display", "block");
+        //                $("#divDOt").css("display", "block");
+        //                $("#divUser").css("display", "block");
+        //            }
+        //        },
+        //        failure: function (response) {
+        //            alert(response.responseText);
+        //        },
+        //        error: function (response) {
+        //            alert(response.responseText);
+        //        }
+        //    });
+        //});
+
+        //
+
+        $("#btnAddDot").click(function () {
+            if ($.trim($("#txtDot").val()).length != 0) {
+                //debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/CustomerDOT/GetCustomerDOT",
+                    data: '{DOTNumber:' + JSON.stringify($("#txtDot").val()) + '}',
+                    //data: JSON.stringify($("#txtDot").val()),
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: "json",
+                    success: function (response) {
+                    //    debugger;
+                        if (response.Status == "Success") {
+                            //$("#AccountNumber").val(response.Result.AccountNumber);
+                            //$("#CompanyID").val(response.Result.CompanyID);
+                            //$("#divAccount").css("display", "block");
+                            //$("#btnNewCustomer").css("display", "none");
+                            //$("#btnUpdateCustomer").css("display", "block");
+                            //$("#divDOt").css("display", "block");
+                            //$("#divUser").css("display", "block");
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            else {
+                $("#errorMessage").html("Please Enter DOT Number");
+                return false;
+            }
+        });
+
+
+    });
+
+</script>
+
+
+@using (Html.BeginForm("EditCustomer", "Customer", new { ReturnUrl = "~/Dashboard/" }, FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @*<h4>CustomerViewModel</h4>*@
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div id="errorMessage"></div>
+        @Html.HiddenFor(model => model.CompanyID)
+        <input type="hidden" id="CompanyID" />
+        <div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Customer Logo</label>
+                <div class="col-md-10">
+                    <input type="file" id="fileLogo" name="postedFile" accept="image/gif, image/jpeg, image/png, image/jpg" />
+                    <img id="imgPreview" src="#" alt="your image" width="100" height="100" style="display:none" />
+                </div>
+            </div>
+
+            <div id="divAccount" class="form-group">
+                @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col-md-2", })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.AccountNumber, new { @class = "form-control", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AccountOwnerName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.AccountOwnerName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AccountOwnerName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AccountOwnerEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.AccountOwnerEmail, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AccountOwnerEmail, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @*<div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create Customer" class="btn btn-default" />
+                    </div>
+                </div>*@
+            <div class="form-group">
+                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Zipcode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Zipcode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Zipcode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AddressLine1, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.AddressLine1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AddressLine1, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AddressLine2, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.AddressLine2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AddressLine2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div id="divCreate" class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnUpdateCustomer" value="Update Customer" class="btn btn-default" />
+                    <input type="button" id="btnCancel" value="Cancel" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+        <div id="divDOt" class="form-group" style="display:none">
+            @Html.Label("lblDot", "Add Dot", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" id="txtDot" class="form-control" name="txtDot" value="" />
+                <input type="button" id="btnAddDot" value="Add" class="btn btn-default" />
+                <table id="tableDot" class="table table-bordered table-striped" style="display:none">
+                    @*<thead>
+                            <tr>
+                                <td>DotNumber</td>
+                                <td>Label</td>
+                                <td>Created By</td>
+                                <td>Created On</td>
+                                <td>Actions</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>123</td>
+                            <td>fff</td>
+                            <td>ddd</td>
+                            <td>ddd</td>
+                            <td><input value="Edit" type="button" class="btn btn-default" /><input value="Delete" type="button" class="btn btn-default" /></td>
+                        </tr>*@
+                </table>
+            </div>
+        </div>
+
+        <div id="divUser" class="form-group" style="display:none">
+            @Html.Label("lblDot", "Add User", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="text" class="form-control" id="txtUser" name="txtUser" value="" />
+                <input type="button" id="btnAddUser" value="Add" class="btn btn-default" />
+                <table id="tableUser" class="table table-bordered table-striped" style="display:none">
+                    @*<thead>
+                            <tr>
+                                <td>User Id</td>
+                                <td>User Name</td>
+                                <td>Role</td>
+                                <td>Created On</td>
+                                <td>Actions</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>User123</td>
+                            <td>Rajesh</td>
+                            <td>Super Admin</td>
+                            <td>ddd</td>
+                            <td><input value="Edit" type="button" class="btn btn-default" /><input value="Delete" type="button" class="btn btn-default" /></td>
+                        </tr>*@
+                </table>
+            </div>
+        </div>
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Zipcode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Zipcode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Zipcode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AddressLine1, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.AddressLine1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AddressLine1, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AddressLine2, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.AddressLine2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AddressLine2, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>*@
+
+    </div>
+}
+
+@*<div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+@section Scripts {
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+
+}
+
+
+
+

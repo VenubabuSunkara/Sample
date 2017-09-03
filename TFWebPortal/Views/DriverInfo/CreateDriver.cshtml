@@ -1,0 +1,96 @@
+﻿@model TransForce.Web.Portal.Models.Driver
+@{
+    ViewBag.Title = "CreateDriver";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DatePicker/datepicker.css" rel="stylesheet" />
+<link href="~/Content/DatePicker/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            dateFormat: 'MM dd yy',
+            changeMonth: true,
+            changeYear: true,
+            inline: true,
+        });
+
+    });
+</script>
+
+<div class="form-horizontal">
+    <h3 style="padding-top:20px">Create Driver</h3>
+    <hr />
+    <label id="lblErrorMessage" style="color:red" class="Customer-error-Message"></label>
+    <input type="hidden" id="CompanyID" />
+    <div>
+        <div class="form-group">
+            <label class="control-label col-md-2">DOT Number<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DOTNumber, new { htmlAttributes = new { @class = "form-control customerread", required = "required", @maxlength = "120" } })
+                <label id="lblDotError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">First Name<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FirstName, new { @class = "form-control", @maxlength = "100" })
+                <label id="lblFNameError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Last Name<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "100" } })
+                <label id="lblLNameError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">License State<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LicenseState, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "50" } })
+                <label id="lblLstateError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">License Number<span style='color:red'>*</span>:</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LicenseNumber, new { htmlAttributes = new { @class = "form-control", @maxlength = "120" } })
+                <label id="lblLnumberError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DOB, string.Format("{0}:", Html.DisplayNameFor(m => m.DOB)), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.DOB, new { @class = "form-control datepicker", placeholder = "Select Billing Month here...", @readonly = "readonly" })
+                <label id="lblDOBError" style="color:red" class="Driver-error"></label>
+            </div>
+        </div>
+
+        <div id="divStatus" class="form-group" style="display:none">
+            @Html.LabelFor(model => model.isActive, string.Format("{0}:", Html.DisplayNameFor(m => m.isActive)), htmlAttributes: new { @class = "control-label col-md-2 customerread" })
+            <div class="col-md-10">
+                <input type="checkbox" name="IsActive" class="form-control btndisable" id="cbCustomerStatus">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="divCreate" class="col-md-offset-2 col-md-10">
+                <input type="button" id="btnSave" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <label id="lblMessage" style="color:forestgreen;display:none"></label>
+                <label id="lblCErrorMessage" style="color:red;display:none"></label>
+            </div>
+        </div>
+    </div>
+</div>

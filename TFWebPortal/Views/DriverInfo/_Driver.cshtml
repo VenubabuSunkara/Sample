@@ -1,0 +1,169 @@
+﻿@model TransForce.Web.Portal.Models.Driver
+<link href="~/Content/DatePicker/datepicker.css" rel="stylesheet" />
+<link href="~/Content/DatePicker/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/Scripts/customValidation.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var start = new Date();
+        start.setFullYear(start.getFullYear()-90);
+        var end = new Date();
+        end.setFullYear(end.getFullYear());
+
+        $('.datepicker').datepicker({
+            dateFormat: 'mm/dd/yy',
+            changeMonth: true,
+            changeYear: true,
+            inline: true,
+            minDate: start,
+            maxDate: end,
+            yearRange: start.getFullYear() + ':' + end.getFullYear()
+        });
+        var actionValue = '@(ViewBag.Action)';
+
+        if (actionValue == "Create") {
+            $('.datepicker').val("");
+            postUrl = "/DriverInfo/CreateDriver";
+            $('#cbDriverStatus').prop("checked", true);
+        }
+        else {
+            $('#divStatus').css("display", "block");
+            var Value =@Html.Raw(Json.Encode(Model.isActive));
+            postUrl = "/DriverInfo/UpdateDriver";
+            $('#cbDriverStatus').prop("checked",Value);
+        }
+
+
+        $('#btnSave').on('click', function (e) {
+           // debugger;
+            var dOTNumber = $("#DOTNumber").val();
+            var firstName = $("#FirstName").val();
+            var lastName = $("#LastName").val();
+            var licenseNumber = $("#LicenseNumber").val();
+            var licenseState = $("#LicenseState").val();
+            var dob = $("#DOB").val();
+
+            if (validateDriver(dOTNumber, firstName, lastName, licenseState, licenseNumber, dob) == false) {
+                return false;
+            }
+
+
+
+            var driverModel = {
+                DOTNumber: dOTNumber,
+                FirstName: firstName,
+                LastName: lastName,
+                LicenseNumber: licenseNumber,
+                licenseState: licenseState,
+                DOB: dob,
+                isActive: $("#cbDriverStatus").is(':checked'),
+                CompanyId:companyID,
+                DriverID:$("#DriverID").val()
+            }
+
+
+            $.ajax({
+                type: "POST",
+                url: postUrl,
+                data: JSON.stringify(driverModel),
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+                success: function (response) {
+                    if (response != "Success") {
+                        $("#lblDErrorMessage").html(response);
+                        return false;
+                    }
+                    $('#createDriverModal').modal('hide');
+                    driverListVM.refresh();
+                },
+                failure: function (response) {
+                    //alert(response.responseText);
+                },
+                error: function (response) {
+                    //alert(response.responseText);
+                }
+            });
+            e.preventDefault();
+        });
+
+    });
+</script>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Add/Edit Driver</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <label id="lblErrorMessage" style="color:red" class="Customer-error-Message"></label>
+                <input type="hidden" id="CompanyID" />
+                @Html.HiddenFor(model => model.DriverID)
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">DOT Number<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.DOTNumber, new { htmlAttributes = new { @class = "form-control customerread", required = "required", @maxlength = "120" } })
+                            <label id="lblDotError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">First Name<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @maxlength = "100" } })
+                            <label id="lblFNameError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Last Name<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "100" } })
+                            <label id="lblLNameError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">License State<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LicenseState, new { htmlAttributes = new { @class = "form-control customerread", @maxlength = "50" } })
+                            <label id="lblLstateError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">License Number<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.LicenseNumber, new { htmlAttributes = new { @class = "form-control", @maxlength = "120" } })
+                            <label id="lblLnumberError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">DOB<span style='color:red'>*</span>:</label>
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(model => model.DOB, new { @Value = Model.DOB.ToString("MM-dd-yyyy"), @class = "form-control datepicker", @placeholder = "Select DOB here...", @readonly = "readonly" })
+                            <label id="lblDOBError" style="color:red" class="Driver-error"></label>
+                        </div>
+                    </div>
+
+                    <div id="divStatus" class="form-group">
+                        @Html.LabelFor(model => model.isActive, string.Format("{0}:", Html.DisplayNameFor(m => m.isActive)), htmlAttributes: new { @class = "control-label col-md-4 customerread" })
+                        <div class="col-md-6">
+                            <input type="checkbox" name="IsActive" class="form-control btndisable" id="cbDriverStatus">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div id="divCreate" class="col-md-offset-2 col-md-10">
+                            <label id="lblDErrorMessage" style="color:red"></label>
+                            <input type="button" id="btnSave" value="Save" class="btn btn-primary" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

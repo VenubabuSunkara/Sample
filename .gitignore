@@ -1,0 +1,12 @@
+/.vs
+/*.user
+/TFWebPortal/App_Data
+/TFWebPortal/bin
+/TFWebPortal/obj
+/TFWebPortalAPI/App_Data
+/TFWebPortalAPI/bin
+/TFWebPortalAPI/obj
+/TFWebPortalAPI/*.html
+/TFWebPortal/*.html
+/TFWebPortal/*.user
+/TFWebPortalAPI/*.user

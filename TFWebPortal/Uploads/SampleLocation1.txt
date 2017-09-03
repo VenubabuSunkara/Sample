@@ -1,0 +1,11 @@
+LocationName	LocCode	FirstContactName	FirstContactEmail	isActive	SecondContactName	SecondContactEmail	ThirdContactName	ThirdContactEmail
+LosAngeles	323	Thirupathi	thirupathi.chindam@raybiztech.com	TRUE	Chindam	chindam.thirupathi@raybiztech.com		
+Stockton	209	Thirupathi1	thirupathi.chindam1@raybiztech.com	TRUE	Chindam1	chindam.thirupathi1@raybiztech.com		
+Downtown Los Angeles	213	Thirupathi2	thirupathi.chindam2@raybiztech.com	TRUE	Chindam2	chindam.thirupathi2@raybiztech.com		
+Santa Monica	310	Thirupathi3	thirupathi.chindam3@raybiztech.com	TRUE	Chindam3	chindam.thirupathi3@raybiztech.com		
+San Jose	408	Thirupathi4	thirupathi.chindam4@raybiztech.com	TRUE	Chindam4	chindam.thirupathi4@raybiztech.com		
+San Francisco	415	Thirupathi5	thirupathi.chindam5@raybiztech.com	TRUE	Chindam5	chindam.thirupathi5@raybiztech.com		
+Oakland	510	Thirupathi6	thirupathi.chindam6@raybiztech.com	TRUE	Chindam6	chindam.thirupathi6@raybiztech.com		
+ Fresno	559							
+ Long Beach	562							
+San Diego	619							

@@ -1,0 +1,180 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{
+    ViewBag.Title = "GetDrivers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @*@Styles.Render("~/Content/datatables")*@
+}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/dataTables.bootstrap.css">
+
+<script src="~/Scripts/commonfunctions.js"></script>
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+@*<style>
+        .disabled {
+            pointer-events: none;
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+    </style>*@
+<script type="text/javascript">
+    var driverListVM;
+    var companyID;
+    $(document).ready(function () {
+        $("#CompanyList").val("")
+        companyID = @Html.Raw(Json.Encode(Model.CompanyID));
+        //Account admin login time disabled the controles
+        if (companyID != 0) {
+            bindDrivers(companyID);
+            $('.hideSuper').attr('disabled', true);
+        }
+        $("#CompanyList").on('change',function () {
+            companyID = $(this).val();
+            if (companyID=="") {
+                $('#divDriver').css("display", "none");
+                return false;
+            }
+            bindDrivers(companyID);
+        });
+
+
+
+        $('#divDriver').on("click", ".deleteDriver", function (event) {
+            //if ($(this).closest('tr').children('td:eq(2)').text() != 'inactive') {
+            var result = confirm("Want to delete?");
+            if (result) {
+                event.preventDefault();
+                var url = $(this).attr("href");
+                $.get(url, function (data) {
+                    driverListVM.refresh();
+                });
+            }
+            //}
+            //return false;
+        });
+
+
+        $("#btnAddDriver").on("click", function (e) {
+            var url = $(this).data("url");
+            $.get(url, function (data) {
+                $('#createDriverContainer').html(data);
+                $('#createDriverModal').modal('show');
+            });
+        });
+
+        $("#Drivertable").on("click", ".editDriver", function (event) {
+            event.preventDefault();
+            var url = $(this).attr("href");
+            $.get(url, function (data) {
+                $('#createDriverContainer').html(data);
+                $('#createDriverModal').modal('show');
+            });
+
+        });
+
+
+        function bindDrivers(companyID)
+        {
+            $('#divDriver').css("display", "block");
+            driverListVM = {
+                Driverdt: null,
+                init: function (event) {
+                    Driverdt = $('#Drivertable').DataTable({
+                        "ajax": {
+                            "url": "/DriverInfo/GetDriversByCompanyId?CompanyId=" + companyID,
+                            "type": "GET",
+                            "datatype": "json",
+                        },
+                        "destroy": true,
+                        "oLanguage": {
+                            "sEmptyTable": "No Drivers found in this company"
+                        },
+                        "order": [[3,'desc'],[4,'desc']],
+                        "columns": [
+                               { "title": "Last Name", "data": "LastName", "searchable": true },
+                                                        { "title": "First Name", "data": "FirstName", "searchable": true },
+                                                        {
+                                                            "title": "DOB", "data": "DOB", "searchable": false,
+                                                            "render": function (data) {
+                                                                return dateConverter(data);
+                                                            }
+                                                        },
+                                                        {
+                                                            "title": "Is Active", "data": "isActive", "searchable": false,
+                                                            "render": function (data) {
+                                                                return data == true ? "Y" : "N";
+                                                            }
+                                                        },
+                                                        {
+                                                            "title": "Driver License State", "data": "LicenseState", "searchable": false
+                                                        },
+                                                        {
+                                                            "title": "Driver License Number", "data": "LicenseNumber", "searchable": false
+                                                        },
+                                                        {
+                                                            "title": "Actions",
+                                                            "data": "DriverID",
+                                                            "searchable": false,
+                                                            "sortable": false,
+                                                            "render": function (data, type, full, meta) {
+                                                                return '<a href="@Url.Action("EditDriver", "DriverInfo")?DriverId=' + data + '&&CompanyId=' + companyID + '" class="editDriver">Edit</a> | <a href="@Url.Action("DeleteDriver", "DriverInfo")?DriverId=' + data+ '&&CompanyId=' + companyID + '" class="deleteDriver">Delete</a>';
+                                                            }
+                                                        }],
+                        "lengthMenu": [[10,20,30,40], [10,20,30,40]],
+                    });
+                },
+                refresh: function () {
+                    Driverdt.ajax.reload();
+                }
+            }
+            // initialize the datatables
+            driverListVM.init();
+        }
+
+    });
+</script>
+<div class="form-horizontal">
+    <h2 style="padding-top:20px">Drivers</h2>
+
+    <div class="modal fade" id="createDriverModal" tabindex="-1" role="dialog" aria-labelledby="createDriverModal" aria-hidden="true" data-backdrop="static">
+        <div id="createDriverContainer">
+        </div>
+    </div>
+
+    <div id="divSP">
+        @if (Model.CompanyID == 0)
+        {
+            <div class="form-group hideSuper">
+                @Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Please select", new { @class = "form-control" })
+                    <label id="lblDriverError" style="color:red" class="driver-error"></label>
+                </div>
+            </div>
+        }
+    </div>
+    <div id="divDriver" class="form-group" style="display:none">
+        <button type="button" id="btnAddDriver" class="btn btn-default btn-md btndisable" data-toggle="modal" data-url="@Url.Action("CreateDriver", "DriverInfo")">
+            <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>Add Driver
+        </button>
+        <div class="col-md-12">
+            <table id="Drivertable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>DOB</th>
+                        <th>IsActive</th>
+                        <th>Driver License State</th>
+                        <th>Driver License Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f82bf4ab116943b7abd4d6c8f2d3ab23" Name="Diagram1" ZoomLevel="65">
+        <EntityTypeShape EntityType="TFModel.AspNetRole" Width="1.5" PointX="7.75" PointY="4.125" />
+        <EntityTypeShape EntityType="TFModel.AspNetUserClaim" Width="1.5" PointX="12.25" PointY="2.625" />
+        <EntityTypeShape EntityType="TFModel.AspNetUserLogin" Width="1.5" PointX="12.25" PointY="5.375" />
+        <EntityTypeShape EntityType="TFModel.CustomerDOTNumber" Width="1.5" PointX="3" PointY="23.125" />
+        <EntityTypeShape EntityType="TFModel.Driver" Width="1.5" PointX="3" PointY="18.25" />
+        <EntityTypeShape EntityType="TFModel.G_RPT_REG_CP_CRASH_ID" Width="1.5" PointX="7.75" PointY="9.5" />
+        <EntityTypeShape EntityType="TFModel.G_RPT_REG_CP_INSP_VIOL_DETAIL" Width="1.5" PointX="11.75" PointY="9.5" />
+        <EntityTypeShape EntityType="TFModel.G_VIOL_CAT_TYPE_NAME" Width="1.5" PointX="13.75" PointY="8.5" />
+        <EntityTypeShape EntityType="TFModel.Location" Width="1.5" PointX="3" PointY="14.375" />
+        <EntityTypeShape EntityType="TFModel.Location_Configuration" Width="1.5" PointX="3" PointY="3.5" />
+        <EntityTypeShape EntityType="TFModel.LocationFieldType" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="TFModel.LocationMetadata" Width="1.5" PointX="5.25" PointY="8.25" />
+        <AssociationConnector Association="TFModel.FK_LocationMetadata_Location" />
+        <AssociationConnector Association="TFModel.FK_LocationMetadata_Location_Configuration" />
+        <AssociationConnector Association="TFModel.FK_LocationMetadata_FieldType" />
+        <EntityTypeShape EntityType="TFModel.AspNetUser" Width="1.5" PointX="10" PointY="1.75" />
+        <EntityTypeShape EntityType="TFModel.CustomerProfile" Width="1.5" PointX="0.75" PointY="11.125" />
+        <EntityTypeShape EntityType="TFModel.G_RPT_REG_CP_INSP_ID" Width="1.5" PointX="7.75" PointY="18.125" />
+        <EntityTypeShape EntityType="TFModel.Inspection_Documents" Width="1.5" PointX="3" PointY="10.75" />
+        <EntityTypeShape EntityType="TFModel.ManualRSI" Width="1.5" PointX="10" PointY="14.5" />
+        <AssociationConnector Association="TFModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="TFModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="TFModel.FK_AspNetUsers_Company" />
+        <AssociationConnector Association="TFModel.FK_CustomerDOTNumbers_CustomerProfiles" />
+        <AssociationConnector Association="TFModel.FK_Driver_Company" />
+        <AssociationConnector Association="TFModel.FK_Inspection_Documents_Company" />
+        <AssociationConnector Association="TFModel.FK_Location_Configuration_CustomerProfiles" />
+        <AssociationConnector Association="TFModel.FK_Location_CustomerProfiles" />
+        <AssociationConnector Association="TFModel.FK_LocationMetadata_Customer" />
+        <AssociationConnector Association="TFModel.FK_ManualRSI_Company" />
+        <AssociationConnector Association="TFModel.FK_ManualRSI_INSP_ID" />
+        <AssociationConnector Association="TFModel.FK_Inspection_Documents_Inspection_Documents" />
+        <AssociationConnector Association="TFModel.AspNetUserRoles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

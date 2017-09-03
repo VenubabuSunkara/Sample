@@ -1,0 +1,175 @@
+﻿@model TransForce.Web.Portal.Models.CustomerProfile
+@{
+    ViewBag.Title = "UploadInspectionXml";
+}
+
+@*<h2>UploadInspectionXml</h2>*@
+
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/commonfunctions.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#CompanyList').prop('selectedIndex',0);
+        $("#fileXML").val('');
+        $("#divLoading").hide();
+        var companyID = @Html.Raw(Json.Encode(Model.CompanyID));
+
+        if (companyID != 0) {
+            $("#CompanyID").val(companyID);
+            $('.hideSuper').attr('disabled', true);
+        }
+
+        //validating the file
+        $("#fileXML").change(function () {
+            var _validFileExtensions = [".xml"];
+            $("#lblfileXMLError").html('');
+            if (!Validate(this, _validFileExtensions)) {
+                $("#fileXML").val('');
+                $('#lblfileXMLError').css("display", "block");
+                $("#lblfileXMLError").html("The file type isn't an acceptable format. Please upload new file in an acceptable format.");
+                $("#lblMessage").html("");
+                return false;
+            }
+            if ((this.files[0].size > 5242880)) {
+                $("#fileLocation").val('');
+                $('#lblfileXMLError').css("display", "block");
+                $("#lblfileXMLError").html("The upload file size is reached maxim. Please upload below 5MB size.");
+                $("#lblMessage").html("");
+                return false;
+            }
+
+            $("#btnSave").removeAttr("disabled");
+            $('#lblfileXMLError').css("display", "none");
+            $("#lblMessage").html("");
+        });
+
+        $("#CompanyList").change(function() {
+            ddlcompanyID = $("#CompanyList").val();
+            companyID = ddlcompanyID;
+        });
+
+        $("#btnSave").click(function () {
+            if(companyID==0){
+                companyId = $("#CompanyList").val();
+            }
+            else{
+                companyId = companyID;
+            }
+
+            if(companyId!=""){
+                $("#CompanyID").val(companyId);
+            }
+
+            //if(companyId == 'undefined')
+            //{
+            //    companyId = $("#CompanyID").val();
+            //}
+
+            var inspection = $("#fileXML").val();
+            if (validateInspection(companyId, inspection)==false) {
+                return false;
+            }
+
+            $("#divLoading").show();
+        });
+
+        function validateInspection(companyId, inspection) {
+            var message = "";
+            $('.inspection-error').html('');
+            if ($.trim(companyId).length == 0) {
+                message = message + "Please select the Company <br />";
+                $("#lblCompanyError").html('Please select the company.');
+            }
+            if ($.trim(inspection).length == 0) {
+                message = message + "Please select file <br />";
+                $("#lblfileXMLError").html('Please select file.');
+            }
+            if (message != "") {
+                return false;
+            }
+            else {
+                $('.inspection-error').html('');
+                return true;
+            }
+        }
+
+    });
+</script>
+<div class="row">
+    <div class="col-md-offset-4 col-md-8">
+        <section id="loginForm" class="login-form">
+            @*return url = ViewBag.ReturnUrl // hardcoded to Dashboard/index.cshtml*@
+            @using (Html.BeginForm("UploadInspectionXml", "Inspection", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h2>Upload Inspection</h2>
+                <hr />
+                <label id="lblError" style="color:red;display:none"></label>
+
+                @Html.HiddenFor(m => m.CompanyID)
+
+                if (Model.CompanyList != null)
+                {
+                    <div class="form-group hideSuper">
+                        <label class="col-md-2 control-label">Select Company<span style='color:red'>*</span>:</label>
+                        @*@Html.Label("lblCompanyName", "Select Company :", new { @class = "col-md-2 control-label" })*@
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(m => m.CompanyList, Model.CompanyList, "Please select")
+                            <label id="lblCompanyError" style="color:red" class="inspection-error"></label>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Select Inspection File<span style='color:red'>*</span>:</label>
+                    @*@Html.Label("lblLocation", "Select Location File :", new { @class = "col-md-2 control-label" })*@
+                    <div class="col-md-10">
+                        <input type="file" id="fileXML" name="fileXML" max-size=1024 />
+                        <label id="lblfileXMLError" style="color:red" class="inspection-error"></label>
+                        @if (ViewBag.SuccessMessage != null)
+                        {
+                            <span id="lblMessage" class="inspection-error" style="color:green">@ViewBag.SuccessMessage</span>
+                        }
+                        @if (ViewBag.ErrorMessage != null)
+                        {
+                            <span id="lblMessage" class="inspection-error" style="color:red">@ViewBag.ErrorMessage</span>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" id="btnSave" value="Upload" disabled="disabled" class="btn btn-default" />
+                    </div>
+                </div>
+
+            }
+
+
+
+            @*<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true" data-backdrop="static">
+                    <div id="divSuccess" class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p id="modelMessage"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+        </section>
+
+    </div>
+</div>
+
+<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px;
+    top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001;
+    opacity: .8; filter: alpha(opacity=70);display:none">
+    <p style="position: absolute; top: 30%; left: 45%; color: White;">
+        <img src="~/Content/loading.gif">
+    </p>
+</div>
+
+

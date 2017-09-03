@@ -1,0 +1,22 @@
+﻿@*@using Microsoft.AspNet.Identity*@
+@{TransForce.Web.Portal.Models.UserModel userData = Session["UserData"] as TransForce.Web.Portal.Models.UserModel;}
+@if (userData != null)
+{
+    //using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    //{
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right nav-custom">
+        <li>
+            <p style="color:white;margin:auto">Hello @userData.Email</p>
+        </li>
+        <li>@Html.ActionLink("Log off", "LogOff", "Account")</li>
+    </ul>
+    //}
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right nav-custom">
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "GetCustomer";
+    Layout = "~/Views/Shared/_DeashboardLayout.cshtml";
+}
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/commonfunctions.js"></script>
+<script src="~/Scripts/customValidation.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Customer/GetAllCustomer",
+            data: "",
+            contentType: 'application/json;charset=utf-8',
+            dataType: "json",
+            success: function (response) {
+                var trHTML = '';
+                trHTML +=
+                   '<tr><td>' + response.data[0].AccountNumber +
+                   '</td><td>' + response.data[0].CustomerName +
+                   '</td><td>' + response.data[0].AccountOwnerName +
+                   '</td><td>' + response.data[0].AccountOwnerEmail +
+                   '</td><td>' + getStatus(response.data[0].isActive) +
+                   '</td><td>' + response.data[0].DotCount +
+                   '</td><td>' + getDate(response.data[0].ModifiedOn) +
+                   '</td><td>' + '<a href="@Url.Action("EditCustomer", "Customer")?CompanyId=' + response.data[0].CompanyID + '" class="editCustomer">Edit</a>' +
+                  '</td></tr>';
+                $('#tableCustomer').append(trHTML);
+            },
+            failure: function (response) {
+                $("#lblErrorMessage").html(response);
+                //alert(response.responseText);
+            },
+            error: function (response) {
+                $("#lblErrorMessage").html("Inter");
+                //alert(response.responseText);
+            }
+        });
+    });
+
+    function getStatus(data) {
+        return data == true ? "Y" : "N";
+    }
+
+    function getDate(data) {
+        if (data != null) {
+            return dateConverter(data) + " " + timeConverter(data);
+        }
+        return "";
+    }
+
+</script>
+
+<h3 style="padding-top:20px">Customer Profile</h3>
+<div class="form-horizontal">
+    <hr />
+    <label id="lblErrorMessage" style="color:red" class="Customer-error-Message"></label>
+    <div id="divAccountCompany" class="form-group">
+        <div class="col-md-12">
+            <table id="tableCustomer" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                    <tr style="font-weight:bold">
+                        <td>Account Number</td>
+                        <td>Company Name</td>
+                        <td>Account Owner Name</td>
+                        <td>Account Owner Email</td>
+                        <td>Is Active</td>
+                        <td>DOT Count</td>
+                        <td>Modified On</td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
